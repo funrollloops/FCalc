@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from dataclasses import dataclass
 from datetime import timedelta
 from math import ceil
 from queue import Queue
@@ -19,11 +20,12 @@ FURNACE = STEEL_FURNACE
 
 ASSEMBLER1 = Building('assembler-1', .5)
 ASSEMBLER2 = Building('assembler-2', .75)
-ASSEMBLER = ASSEMBLER1
+ASSEMBLER = ASSEMBLER2
 
 CHEMICAL_PLANT = Building('chemical-plant', 1)
 ELECTRIC_MINING_DRILL = Building('electric-mining-drill', .5)
 WATER_PUMP = Building('water-pump', 1)
+
 
 class Ingredient(NamedTuple):
   name: str
@@ -41,6 +43,26 @@ class Recipe(NamedTuple):
 RAWS = set(['petroleum-gas'])
 
 RECIPES = [
+    Recipe('production-science-pack', ASSEMBLER, 3, secs(21), [
+        Ingredient('rail', 30),
+        Ingredient('electric-furnace', 1),
+        Ingredient('productivity-module-1', 1),
+    ]),
+    Recipe('rail', ASSEMBLER, 2, secs(.5), [
+        Ingredient('stone', 1),
+        Ingredient('steel-plate', 1),
+        Ingredient('iron-stick', 1)
+    ]),
+    Recipe('electric-furnace', ASSEMBLER, 1, secs(5), [
+        Ingredient('steel-plate', 10),
+        Ingredient('advanced-circuit', 5),
+        Ingredient('stone-brick', 10)
+    ]),
+    Recipe('productivity-module-1', ASSEMBLER, 1, secs(15), [
+        Ingredient('electronic-circuit', 5),
+        Ingredient('advanced-circuit', 5)
+    ]),
+    Recipe('iron-stick', ASSEMBLER, 2, secs(.5), [Ingredient('iron-plate', 1)]),
     Recipe('chemical-science-pack', ASSEMBLER, 2, secs(24), [
         Ingredient('sulfur', 1),
         Ingredient('advanced-circuit', 3),
@@ -71,37 +93,37 @@ RECIPES = [
     Recipe('iron-gear-wheel', ASSEMBLER, 1, secs(.5),
            [Ingredient('iron-plate', 2)]),
     Recipe('pipe', ASSEMBLER, 1, secs(.5), [Ingredient('iron-plate', 1)]),
-    Recipe('iron-plate', STEEL_FURNACE, 1, secs(3.2), [Ingredient('iron-ore', 1)]),
-    Recipe('copper-plate', STEEL_FURNACE, 1, secs(3.2), [Ingredient('copper-ore', 1)]),
+    Recipe('iron-plate', STEEL_FURNACE, 1, secs(3.2),
+           [Ingredient('iron-ore', 1)]),
+    Recipe('copper-plate', STEEL_FURNACE, 1, secs(3.2),
+           [Ingredient('copper-ore', 1)]),
     Recipe('iron-ore', ELECTRIC_MINING_DRILL, 1, secs(1), []),
     Recipe('copper-ore', ELECTRIC_MINING_DRILL, 1, secs(1), []),
     Recipe('stone', ELECTRIC_MINING_DRILL, 1, secs(1), []),
     Recipe('coal', ELECTRIC_MINING_DRILL, 1, secs(1), []),
     Recipe('water', WATER_PUMP, 1200, secs(1), []),
-
     Recipe('military-science-pack', ASSEMBLER, 2, secs(10), [
-      Ingredient('piercing-rounds-magazine', 1),
-      Ingredient('grenade', 1),
-      Ingredient('wall', 2),
+        Ingredient('piercing-rounds-magazine', 1),
+        Ingredient('grenade', 1),
+        Ingredient('wall', 2),
     ]),
     Recipe('piercing-rounds-magazine', ASSEMBLER, 1, secs(4), [
-      Ingredient('copper-plate', 5),
-      Ingredient('steel-plate', 1),
-      Ingredient('firearm-magazine', 1),
+        Ingredient('copper-plate', 5),
+        Ingredient('steel-plate', 1),
+        Ingredient('firearm-magazine', 1),
     ]),
     Recipe('grenade', ASSEMBLER, 1, secs(8), [
-      Ingredient('coal', 10),
-      Ingredient('iron-plate', 5),
+        Ingredient('coal', 10),
+        Ingredient('iron-plate', 5),
     ]),
     Recipe('wall', ASSEMBLER, 1, secs(0.5), [
-      Ingredient('stone-brick', 5),
+        Ingredient('stone-brick', 5),
     ]),
-
     Recipe('firearm-magazine', ASSEMBLER, 1, secs(1), [
-      Ingredient('iron-plate', 4),
+        Ingredient('iron-plate', 4),
     ]),
     Recipe('stone-brick', FURNACE, 1, secs(3.2), [
-      Ingredient('stone', 2),
+        Ingredient('stone', 2),
     ]),
 ]
 
@@ -120,12 +142,18 @@ def check_recipes():
 
 
 def calculate_recursive(name: str, items_per_minute: float):
-  accumulated: dict[str, float] = {}  # value is number of buildings
+
+  @dataclass
+  class Totals:
+    buildings: float = 0
+    items_per_sec: float = 0
+
+  totals: dict[str, Totals] = {}
 
   def process(name: str, items_per_sec: float, depth: int):
-    accumulated.setdefault(name, 0)
+    totals.setdefault(name, Totals())
+    totals[name].items_per_sec += items_per_sec
     if name in RAWS:
-      accumulated[name] += items_per_sec
       return
     recipe = RECIPES[name]
     # Calculate how many assemblers are needed.
@@ -135,9 +163,12 @@ def calculate_recursive(name: str, items_per_minute: float):
     if depth < 0:
       quiet = True
     else:
-      quiet = recipe.building in (ELECTRIC_MINING_DRILL, STEEL_FURNACE, STONE_FURNACE, WATER_PUMP)
-      print("%s% 5.1f/s % 5.1f🏭 %s (%s)" % ('  ' * depth, items_per_sec, buildings, name, recipe.building.name))
-    accumulated[name] += buildings
+      quiet = recipe.building in (ELECTRIC_MINING_DRILL, STEEL_FURNACE,
+                                  STONE_FURNACE, WATER_PUMP)
+      print(
+          "%s% 5.1f/s % 5.1f🏭 %s (%s)" %
+          ('  ' * depth, items_per_sec, buildings, name, recipe.building.name))
+    totals[name].buildings += buildings
     # Calculate demand on the inputs.
     for input in recipe.ingredients:
       process(input.name, input.qty * items_per_sec / recipe.output_qty,
@@ -147,16 +178,25 @@ def calculate_recursive(name: str, items_per_minute: float):
   process(name, items_per_minute / 60, 0)
 
   print("## Totals")
-  for name, buildings in sorted(accumulated.items(), key=lambda i: (RECIPES[i[0]].building.name if i[0] in RECIPES else 'xx', i[0])):
-    print("% 6.1f %s (%s)" % (buildings, name, RECIPES[name].building.name if name in RECIPES else 'raw'))
+  for name, totals in sorted(totals.items(),
+                             key=lambda i:
+                             (RECIPES[i[0]].building.name
+                              if i[0] in RECIPES else 'xx', i[0])):
+    print("% 6.1f🏭 % 6.1f/sec %s (%s)" %
+          (totals.buildings, totals.items_per_sec, name,
+           RECIPES[name].building.name if name in RECIPES else 'raw'))
 
 
 def main():
   assert (check_recipes())
   print("Recipes ok!")
-  calculate_recursive('chemical-science-pack', 30)
+  calculate_recursive('chemical-science-pack', 45)
   print()
-  calculate_recursive('military-science-pack', 30)
+  calculate_recursive('military-science-pack', 45)
+  print()
+  calculate_recursive('production-science-pack', 45)
+  print()
+  calculate_recursive('advanced-circuit', 4*60)
 
 
 if __name__ == "__main__":
