@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from datetime import timedelta
+from io import IncrementalNewlineDecoder
 from math import ceil
 from queue import Queue
 from typing import NamedTuple, TextIO
@@ -19,9 +20,9 @@ class Building(NamedTuple):
 
 class Module(NamedTuple):
   name: str
-  crafting_speed: float = 1
-  productivity: float = 1
-  power: float = 1
+  crafting_speed: float = 0
+  productivity: float = 0
+  power: float = 0
 
 
 class ModdedBuilding:
@@ -41,6 +42,7 @@ PRODUCTIVITY1 = Module('prod-1', crafting_speed=-0.05, productivity=0.04)
 PRODUCTIVITY2 = Module('prod-2', crafting_speed=-0.10, productivity=0.06)
 SPEED1 = Module('speed-1', crafting_speed=0.2, power=0.5)
 SPEED2 = Module('speed-2', crafting_speed=0.3, power=0.6)
+EFFICIENCY1 = Module('speed-2', power=-0.3)
 STONE_FURNACE = Building('stone-furnace', 1)
 STEEL_FURNACE = Building('steel-furnace', 2)
 ELECTRIC_FURNACE = Building('electric-furnace', 2, slots=2)
@@ -48,11 +50,18 @@ FURNACE = STEEL_FURNACE
 
 ASSEMBLER1 = Building('assembler-1', .5)
 ASSEMBLER2 = Building('assembler-2', .75, slots=2)
+ASSEMBLER3 = Building('assembler-3', 1.25, slots=4)
 ASSEMBLER2_2PROD1 = ModdedBuilding('assembler-2:2×prod1', ASSEMBLER2,
-                           [PRODUCTIVITY1, PRODUCTIVITY1])
+                                   [PRODUCTIVITY1, PRODUCTIVITY1])
+ASSEMBLER3_4PROD2 = ModdedBuilding(
+    'assembler-3:4×prod2', ASSEMBLER3,
+    [PRODUCTIVITY2, PRODUCTIVITY2, PRODUCTIVITY2, PRODUCTIVITY2])
+ASSEMBLER3_3PROD2_1SPEED1 = ModdedBuilding(
+    'assembler-3:3×prod2,1×speed1', ASSEMBLER3,
+    [PRODUCTIVITY2, PRODUCTIVITY2, PRODUCTIVITY2, SPEED1])
 ASSEMBLER = ASSEMBLER2_2PROD1
 
-CHEMICAL_PLANT = Building('chemical-plant', 1)
+CHEMICAL_PLANT = Building('chemical-plant', 1, slots=3)
 ELECTRIC_MINING_DRILL = Building('electric-mining-drill', .5, slots=3)
 WATER_PUMP = Building('water-pump', 1)
 
@@ -70,9 +79,48 @@ class Recipe(NamedTuple):
   ingredients: list[Ingredient]
 
 
-RAWS = set(['petroleum-gas'])
+RAWS = set(['petroleum-gas', 'heavy-oil'])
 
 RECIPES = [
+    Recipe('utility-science-pack', ASSEMBLER, 3, secs(21), [
+        Ingredient('processing-unit', 2),
+        Ingredient('flying-robot-frame', 1),
+        Ingredient('low-density-structure', 3)
+    ]),
+    Recipe('processing-unit', ASSEMBLER, 1, secs(10), [
+        Ingredient('electronic-circuit', 20),
+        Ingredient('advanced-circuit', 2),
+        Ingredient('sulfuric-acid', 5)
+    ]),
+    Recipe('flying-robot-frame', ASSEMBLER, 1, secs(20), [
+        Ingredient('steel-plate', 1),
+        Ingredient('battery', 2),
+        Ingredient('electronic-circuit', 3),
+        Ingredient('electric-engine-unit', 1),
+    ]),
+    Recipe('low-density-structure', ASSEMBLER, 1, secs(20), [
+        Ingredient('steel-plate', 2),
+        Ingredient('copper-plate', 20),
+        Ingredient('plastic-bar', 5),
+    ]),
+    Recipe('electric-engine-unit', ASSEMBLER, 1, secs(10), [
+        Ingredient('electronic-circuit', 2),
+        Ingredient('engine-unit', 1),
+        Ingredient('lubricant', 15)
+    ]),
+    Recipe('sulfuric-acid', CHEMICAL_PLANT, 50, secs(1), [
+        Ingredient('iron-plate', 1),
+        Ingredient('sulfur', 5),
+        Ingredient('water', 100),
+    ]),
+    Recipe('battery', CHEMICAL_PLANT, 1, secs(4), [
+        Ingredient('iron-plate', 1),
+        Ingredient('copper-plate', 1),
+        Ingredient('sulfuric-acid', 20),
+    ]),
+    Recipe('lubricant', CHEMICAL_PLANT, 10, secs(1), [
+        Ingredient('heavy-oil', 10),
+    ]),
     Recipe('production-science-pack', ASSEMBLER, 3, secs(21), [
         Ingredient('rail', 30),
         Ingredient('electric-furnace', 1),
@@ -114,10 +162,10 @@ RECIPES = [
     Recipe('plastic-bar', CHEMICAL_PLANT, 2, secs(1),
            [Ingredient('coal', 1),
             Ingredient('petroleum-gas', 20)]),
-    Recipe('electronic-circuit', ASSEMBLER, 1, secs(.5),
+    Recipe('electronic-circuit', ASSEMBLER3_4PROD2, 1, secs(.5),
            [Ingredient('iron-plate', 1),
             Ingredient('copper-cable', 3)]),
-    Recipe('copper-cable', ASSEMBLER, 2, secs(.5),
+    Recipe('copper-cable', ASSEMBLER3_4PROD2, 2, secs(.5),
            [Ingredient('copper-plate', 1)]),
     Recipe('steel-plate', FURNACE, 1, secs(16), [Ingredient('iron-plate', 5)]),
     Recipe('iron-gear-wheel', ASSEMBLER, 1, secs(.5),
@@ -171,10 +219,9 @@ def check_recipes():
   return result
 
 
-@dataclass
-class Demand:
+class Demand(NamedTuple):
   name: str
-  items_per_second: float
+  min_items_per_second: float
 
 
 @dataclass
@@ -184,8 +231,10 @@ class Totals:
 
 
 def belts(items_per_sec: float):
-  if items_per_sec <= 7.5: return ''
-  return ' %1.1f|' % (items_per_sec / 7.5)
+  if items_per_sec <= 7.5:
+    return ''
+  return ' %5.1f|' % (items_per_sec / 7.5)
+
 
 def calculate_recursive(name: str, items_per_second: float,
                         totals: dict[str, Totals], deferred: set[str],
@@ -205,9 +254,9 @@ def calculate_recursive(name: str, items_per_second: float,
                             recipe.building.crafting_speed *
                             recipe.building.productivity)
     buildings = items_per_sec / per_building_per_sec
-    output.write(
-        "%s% 5.2f/s%s % 5.1f🏭 %s (%s)\n" %
-        ('  ' * depth, items_per_sec, belts(items_per_sec), buildings, name, recipe.building.name))
+    output.write("%s% 5.2f/s%s % 5.1f🏭 %s (%s)\n" %
+                 ('  ' * depth, items_per_sec, belts(items_per_sec), buildings,
+                  name, recipe.building.name))
     totals[name].buildings += buildings
     # Calculate demand on the inputs.
     for input in recipe.ingredients:
@@ -224,9 +273,10 @@ def print_totals(totals: dict[str, Totals], output: TextIO):
                              key=lambda i:
                              (RECIPES[i[0]].building.name
                               if i[0] in RECIPES else 'xx', i[0])):
-    output.write("% 6.1f🏭 % 6.2f/sec % 1.1f| %s (%s)\n" %
-                 (totals.buildings, totals.items_per_sec, totals.items_per_sec / 7.5, name,
-                  RECIPES[name].building.name if name in RECIPES else 'raw'))
+    output.write(
+        "% 6.1f🏭 % 7.2f/sec % 6.1f| %s (%s)\n" %
+        (totals.buildings, totals.items_per_sec, totals.items_per_sec / 7.5,
+         name, RECIPES[name].building.name if name in RECIPES else 'raw'))
 
 
 def calculate(demands: list[Demand], output: TextIO):
@@ -235,16 +285,19 @@ def calculate(demands: list[Demand], output: TextIO):
   processed: dict[str, float] = {}
   for demand in demands:
     output.write("\n")
-    if not demand.items_per_second:
-      demand.items_per_second = totals[demand.name].items_per_sec
-    processed[demand.name] = demand.items_per_second
+    requested = totals.get(demand.name, Totals()).items_per_sec
+    if requested < demand.min_items_per_second:
+      requested = demand.min_items_per_second
+    processed[demand.name] = requested
     totals[demand.name] = Totals()
-    calculate_recursive(
-        demand.name, demand.items_per_second, totals, deferred, output)
+    calculate_recursive(demand.name, requested, totals, deferred, output)
+    deferred.remove(demand.name)
     for name, items_per_sec in processed.items():
-      assert (
-          totals[name].items_per_sec == items_per_sec
-      ), f"Demand for {name} added after it was processed while processing {demand.name}!"
+      if totals[name].items_per_sec != items_per_sec:
+        print(
+            f"WARNING: Demand for {name} added after it was processed while processing {demand.name}!"
+        )
+        processed[name] = totals[name].items_per_sec
 
   output.write("\n## Totals\n")
   print_totals(totals, output)
@@ -261,16 +314,20 @@ def main(args):
 
   calculate(
       [
+          Demand('utility-science-pack', .75),
           Demand('production-science-pack', .75),
           Demand('chemical-science-pack', .75),
           Demand('military-science-pack', .75),
 
-          # Auto
-          Demand('advanced-circuit', None),
-          Demand('stone', None),
-          Demand('steel-plate', None),
-          Demand('iron-plate', None),
-          Demand('copper-plate', None)
+          # Subfactories.
+          Demand('processing-unit', 1),
+          Demand('advanced-circuit', 4),
+          Demand('electronic-circuit', 0),
+          Demand('sulfuric-acid', 0),
+          Demand('stone', 0),
+          Demand('steel-plate', 0),
+          Demand('iron-plate', 0),
+          Demand('copper-plate', 0)
       ],
       output)
 
