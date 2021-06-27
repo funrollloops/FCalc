@@ -12,18 +12,42 @@ secs = lambda s: timedelta(seconds=s)
 class Building(NamedTuple):
   name: str
   crafting_speed: float
+  productivity: float = 1.
+  slots: int = 0
 
 
+class Module(NamedTuple):
+  name: str
+  crafting_speed: float = 1
+  productivity: float = 1
+  power: float = 1
+
+
+class ModdedBuilding:
+  def __init__(self, name: str, building: Building, modules: list[Module]):
+    assert(len(modules) <= building.slots), f"{building.name} only has {building.slots} slots!"
+    self.building = building
+    self.modules = modules
+    self.name = name
+    self.productivity = 1 + sum(m.productivity for m in modules)
+    self.crafting_speed = building.crafting_speed * (1 + sum(m.crafting_speed for m in modules))
+
+
+PRODUCTIVITY1 = Module('prod-1', crafting_speed=-0.05, productivity=0.04)
+PRODUCTIVITY2 = Module('prod-2', crafting_speed=-0.10, productivity=0.06)
+SPEED1 = Module('speed-1', crafting_speed=0.2, power=0.5)
+SPEED2 = Module('speed-2', crafting_speed=0.3, power=0.6)
 STONE_FURNACE = Building('stone-furnace', 1)
 STEEL_FURNACE = Building('steel-furnace', 2)
+ELECTRIC_FURNACE = Building('electric-furnace', 2, slots=2)
 FURNACE = STEEL_FURNACE
 
 ASSEMBLER1 = Building('assembler-1', .5)
-ASSEMBLER2 = Building('assembler-2', .75)
-ASSEMBLER = ASSEMBLER2
+ASSEMBLER2 = Building('assembler-2', .75, slots=2)
+ASSEMBLER = ModdedBuilding('assembler-2:2×prod1', ASSEMBLER2, [PRODUCTIVITY1, PRODUCTIVITY1])
 
 CHEMICAL_PLANT = Building('chemical-plant', 1)
-ELECTRIC_MINING_DRILL = Building('electric-mining-drill', .5)
+ELECTRIC_MINING_DRILL = Building('electric-mining-drill', .5, slots=3)
 WATER_PUMP = Building('water-pump', 1)
 
 
@@ -158,7 +182,7 @@ def calculate_recursive(name: str, items_per_minute: float):
     recipe = RECIPES[name]
     # Calculate how many assemblers are needed.
     per_building_per_sec = (recipe.output_qty / recipe.time.total_seconds() *
-                            recipe.building.crafting_speed)
+                            recipe.building.crafting_speed * recipe.building.productivity)
     buildings = items_per_sec / per_building_per_sec
     if depth < 0:
       quiet = True
@@ -171,7 +195,7 @@ def calculate_recursive(name: str, items_per_minute: float):
     totals[name].buildings += buildings
     # Calculate demand on the inputs.
     for input in recipe.ingredients:
-      process(input.name, input.qty * items_per_sec / recipe.output_qty,
+      process(input.name, input.qty * items_per_sec / recipe.output_qty / recipe.building.productivity,
               depth + 1 if not quiet else -1000)
 
   print(f"# Factory for {items_per_minute} {name} per minute")
