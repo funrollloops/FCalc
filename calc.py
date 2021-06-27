@@ -4,7 +4,8 @@ from dataclasses import dataclass
 from datetime import timedelta
 from math import ceil
 from queue import Queue
-from typing import NamedTuple
+from typing import NamedTuple, TextIO
+from sys import stdout, argv
 
 secs = lambda s: timedelta(seconds=s)
 
@@ -24,13 +25,16 @@ class Module(NamedTuple):
 
 
 class ModdedBuilding:
+
   def __init__(self, name: str, building: Building, modules: list[Module]):
-    assert(len(modules) <= building.slots), f"{building.name} only has {building.slots} slots!"
+    assert (len(modules) <=
+            building.slots), f"{building.name} only has {building.slots} slots!"
     self.building = building
     self.modules = modules
     self.name = name
     self.productivity = 1 + sum(m.productivity for m in modules)
-    self.crafting_speed = building.crafting_speed * (1 + sum(m.crafting_speed for m in modules))
+    self.crafting_speed = building.crafting_speed * (1 + sum(m.crafting_speed
+                                                             for m in modules))
 
 
 PRODUCTIVITY1 = Module('prod-1', crafting_speed=-0.05, productivity=0.04)
@@ -44,7 +48,9 @@ FURNACE = STEEL_FURNACE
 
 ASSEMBLER1 = Building('assembler-1', .5)
 ASSEMBLER2 = Building('assembler-2', .75, slots=2)
-ASSEMBLER = ModdedBuilding('assembler-2:2×prod1', ASSEMBLER2, [PRODUCTIVITY1, PRODUCTIVITY1])
+ASSEMBLER2_2PROD1 = ModdedBuilding('assembler-2:2×prod1', ASSEMBLER2,
+                           [PRODUCTIVITY1, PRODUCTIVITY1])
+ASSEMBLER = ASSEMBLER2_2PROD1
 
 CHEMICAL_PLANT = Building('chemical-plant', 1)
 ELECTRIC_MINING_DRILL = Building('electric-mining-drill', .5, slots=3)
@@ -165,63 +171,111 @@ def check_recipes():
   return result
 
 
-def calculate_recursive(name: str, items_per_minute: float):
+@dataclass
+class Demand:
+  name: str
+  items_per_second: float
 
-  @dataclass
-  class Totals:
-    buildings: float = 0
-    items_per_sec: float = 0
 
-  totals: dict[str, Totals] = {}
+@dataclass
+class Totals:
+  buildings: float = 0
+  items_per_sec: float = 0
 
-  def process(name: str, items_per_sec: float, depth: int):
+
+def belts(items_per_sec: float):
+  if items_per_sec <= 7.5: return ''
+  return ' %1.1f|' % (items_per_sec / 7.5)
+
+def calculate_recursive(name: str, items_per_second: float,
+                        totals: dict[str, Totals], deferred: set[str],
+                        output: TextIO):
+
+  def process(name: str, items_per_sec: float,
+              depth: int) -> dict[name, Totals]:
     totals.setdefault(name, Totals())
     totals[name].items_per_sec += items_per_sec
-    if name in RAWS:
+    if name in RAWS or (name in deferred and depth != 0):
+      output.write("%s% 5.2f/s%s %s\n" %
+                   ('  ' * depth, items_per_sec, belts(items_per_sec), name))
       return
     recipe = RECIPES[name]
     # Calculate how many assemblers are needed.
     per_building_per_sec = (recipe.output_qty / recipe.time.total_seconds() *
-                            recipe.building.crafting_speed * recipe.building.productivity)
+                            recipe.building.crafting_speed *
+                            recipe.building.productivity)
     buildings = items_per_sec / per_building_per_sec
-    if depth < 0:
-      quiet = True
-    else:
-      quiet = recipe.building in (ELECTRIC_MINING_DRILL, STEEL_FURNACE,
-                                  STONE_FURNACE, WATER_PUMP)
-      print(
-          "%s% 5.1f/s % 5.1f🏭 %s (%s)" %
-          ('  ' * depth, items_per_sec, buildings, name, recipe.building.name))
+    output.write(
+        "%s% 5.2f/s%s % 5.1f🏭 %s (%s)\n" %
+        ('  ' * depth, items_per_sec, belts(items_per_sec), buildings, name, recipe.building.name))
     totals[name].buildings += buildings
     # Calculate demand on the inputs.
     for input in recipe.ingredients:
-      process(input.name, input.qty * items_per_sec / recipe.output_qty / recipe.building.productivity,
-              depth + 1 if not quiet else -1000)
+      process(
+          input.name, input.qty * items_per_sec / recipe.output_qty /
+          recipe.building.productivity, depth + 1)
 
-  print(f"# Factory for {items_per_minute} {name} per minute")
-  process(name, items_per_minute / 60, 0)
+  process(name, items_per_second, 0)
+  return totals
 
-  print("## Totals")
+
+def print_totals(totals: dict[str, Totals], output: TextIO):
   for name, totals in sorted(totals.items(),
                              key=lambda i:
                              (RECIPES[i[0]].building.name
                               if i[0] in RECIPES else 'xx', i[0])):
-    print("% 6.1f🏭 % 6.1f/sec %s (%s)" %
-          (totals.buildings, totals.items_per_sec, name,
-           RECIPES[name].building.name if name in RECIPES else 'raw'))
+    output.write("% 6.1f🏭 % 6.2f/sec % 1.1f| %s (%s)\n" %
+                 (totals.buildings, totals.items_per_sec, totals.items_per_sec / 7.5, name,
+                  RECIPES[name].building.name if name in RECIPES else 'raw'))
 
 
-def main():
-  assert (check_recipes())
-  print("Recipes ok!")
-  calculate_recursive('chemical-science-pack', 45)
-  print()
-  calculate_recursive('military-science-pack', 45)
-  print()
-  calculate_recursive('production-science-pack', 45)
-  print()
-  calculate_recursive('advanced-circuit', 4*60)
+def calculate(demands: list[Demand], output: TextIO):
+  totals: dict[str, Totals] = {}
+  deferred = set(d.name for d in demands)
+  processed: dict[str, float] = {}
+  for demand in demands:
+    output.write("\n")
+    if not demand.items_per_second:
+      demand.items_per_second = totals[demand.name].items_per_sec
+    processed[demand.name] = demand.items_per_second
+    totals[demand.name] = Totals()
+    calculate_recursive(
+        demand.name, demand.items_per_second, totals, deferred, output)
+    for name, items_per_sec in processed.items():
+      assert (
+          totals[name].items_per_sec == items_per_sec
+      ), f"Demand for {name} added after it was processed while processing {demand.name}!"
+
+  output.write("\n## Totals\n")
+  print_totals(totals, output)
+
+
+def main(args):
+  assert (len(args) <= 1), "Too many arguments: %s" % args
+  assert (check_recipes()), "Recipe database is inconsistent"
+
+  if not args:
+    output = stdout
+  else:
+    output = open(args[0], 'w', encoding='utf-8')
+
+  calculate(
+      [
+          Demand('production-science-pack', .75),
+          Demand('chemical-science-pack', .75),
+          Demand('military-science-pack', .75),
+
+          # Auto
+          Demand('advanced-circuit', None),
+          Demand('stone', None),
+          Demand('steel-plate', None),
+          Demand('iron-plate', None),
+          Demand('copper-plate', None)
+      ],
+      output)
+
+  output.close()
 
 
 if __name__ == "__main__":
-  main()
+  main(argv[1:])
