@@ -46,7 +46,8 @@ EFFICIENCY1 = Module('speed-2', power=-0.3)
 STONE_FURNACE = Building('stone-furnace', 1)
 STEEL_FURNACE = Building('steel-furnace', 2)
 ELECTRIC_FURNACE = Building('electric-furnace', 2, slots=2)
-FURNACE = STEEL_FURNACE
+FURNACE = ModdedBuilding('electric-furnace:2xprod1', ELECTRIC_FURNACE,
+                         [PRODUCTIVITY1, PRODUCTIVITY1])
 
 ASSEMBLER1 = Building('assembler-1', .5)
 ASSEMBLER2 = Building('assembler-2', .75, slots=2)
