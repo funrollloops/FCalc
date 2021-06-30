@@ -28,22 +28,31 @@ class Module(NamedTuple):
 
 class ModdedBuilding(Building):
 
-  def __init__(self, name: str, building: Building, modules: list[Module]):
+  def __init__(self,
+               name: str,
+               building: Building,
+               modules: list[Module],
+               beacon_modules: list[Module] = []):
     assert (len(modules) <=
             building.slots), f"{building.name} only has {building.slots} slots!"
     self.building = building
     self.modules = modules
+    self.beacon_modules = beacon_modules
     self.name = name
-    self.productivity = 1 + sum(m.productivity for m in modules)
-    self.crafting_speed = building.crafting_speed * (1 + sum(m.crafting_speed
-                                                             for m in modules))
+    self.productivity = 1
+    self.productivity += sum(m.productivity for m in modules)
+    self.productivity += sum(m.productivity / 2 for m in beacon_modules)
+    crafting_multiplier = 1
+    crafting_multiplier += sum(m.crafting_speed for m in modules)
+    crafting_multiplier += sum(m.crafting_speed / 2 for m in beacon_modules)
+    self.crafting_speed = building.crafting_speed * crafting_multiplier
 
 
-PRODUCTIVITY1 = Module('prod-1', crafting_speed=-0.05, productivity=0.04)
-PRODUCTIVITY2 = Module('prod-2', crafting_speed=-0.10, productivity=0.06)
-SPEED1 = Module('speed-1', crafting_speed=0.2, power=0.5)
-SPEED2 = Module('speed-2', crafting_speed=0.3, power=0.6)
-EFFICIENCY1 = Module('speed-2', power=-0.3)
+PRODUCTIVITY1 = Module('prod1', crafting_speed=-0.05, productivity=0.04)
+PRODUCTIVITY2 = Module('prod2', crafting_speed=-0.10, productivity=0.06)
+SPEED1 = Module('spd1', crafting_speed=0.2, power=0.5)
+SPEED2 = Module('spd2', crafting_speed=0.3, power=0.6)
+EFFICIENCY1 = Module('eff1', power=-0.3)
 STONE_FURNACE = Building('stone-furnace', 1)
 STEEL_FURNACE = Building('steel-furnace', 2)
 ELECTRIC_FURNACE = Building('electric-furnace', 2, slots=2)
@@ -55,12 +64,14 @@ ASSEMBLER2 = Building('assembler-2', .75, slots=2)
 ASSEMBLER3 = Building('assembler-3', 1.25, slots=4)
 ASSEMBLER2_2PROD1 = ModdedBuilding('assembler-2:2×prod1', ASSEMBLER2,
                                    [PRODUCTIVITY1, PRODUCTIVITY1])
-ASSEMBLER3_4PROD2 = ModdedBuilding(
-    'assembler-3:4×prod2', ASSEMBLER3,
-    [PRODUCTIVITY2, PRODUCTIVITY2, PRODUCTIVITY2, PRODUCTIVITY2])
-ASSEMBLER3_3PROD2_1SPEED1 = ModdedBuilding(
-    'assembler-3:3×prod2,1×speed1', ASSEMBLER3,
-    [PRODUCTIVITY2, PRODUCTIVITY2, PRODUCTIVITY2, SPEED1])
+ASSEMBLER3_4PROD2 = ModdedBuilding('assembler-3:4×prod2', ASSEMBLER3,
+                                   [PRODUCTIVITY2] * 4)
+ASSEMBLER3_3PROD2_1SPEED1 = ModdedBuilding('assembler-3:3×prod2,1×speed1',
+                                           ASSEMBLER3,
+                                           [PRODUCTIVITY2] * 3 + [SPEED1])
+ASSEMBLER3_4PROD2_16SPDBCON = ModdedBuilding('assembler-3:4xprod2:16xspd2',
+                                             ASSEMBLER3, [PRODUCTIVITY2] * 4,
+                                             [SPEED2] * 16)
 ASSEMBLER_NOPROD = ASSEMBLER2
 ASSEMBLER = ASSEMBLER2_2PROD1
 
@@ -165,15 +176,16 @@ RECIPES = [
     Recipe('plastic-bar', CHEMICAL_PLANT, 2, secs(1),
            [Ingredient('coal', 1),
             Ingredient('petroleum-gas', 20)]),
-    Recipe('electronic-circuit', ASSEMBLER3_4PROD2, 1, secs(.5),
+    Recipe('electronic-circuit', ASSEMBLER3_4PROD2_16SPDBCON, 1, secs(.5),
            [Ingredient('iron-plate', 1),
             Ingredient('copper-cable', 3)]),
-    Recipe('copper-cable', ASSEMBLER3_4PROD2, 2, secs(.5),
+    Recipe('copper-cable', ASSEMBLER3_4PROD2_16SPDBCON, 2, secs(.5),
            [Ingredient('copper-plate', 1)]),
     Recipe('steel-plate', FURNACE, 1, secs(16), [Ingredient('iron-plate', 5)]),
     Recipe('iron-gear-wheel', ASSEMBLER, 1, secs(.5),
            [Ingredient('iron-plate', 2)]),
-    Recipe('pipe', ASSEMBLER_NOPROD, 1, secs(.5), [Ingredient('iron-plate', 1)]),
+    Recipe('pipe', ASSEMBLER_NOPROD, 1, secs(.5),
+           [Ingredient('iron-plate', 1)]),
     Recipe('iron-plate', STEEL_FURNACE, 1, secs(3.2),
            [Ingredient('iron-ore', 1)]),
     Recipe('copper-plate', STEEL_FURNACE, 1, secs(3.2),
