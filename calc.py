@@ -11,7 +11,8 @@ from sys import stdout, argv
 secs = lambda s: timedelta(seconds=s)
 
 
-class Building(NamedTuple):
+@dataclass
+class Building:
   name: str
   crafting_speed: float
   productivity: float = 1.
@@ -25,7 +26,7 @@ class Module(NamedTuple):
   power: float = 0
 
 
-class ModdedBuilding:
+class ModdedBuilding(Building):
 
   def __init__(self, name: str, building: Building, modules: list[Module]):
     assert (len(modules) <=
@@ -60,6 +61,7 @@ ASSEMBLER3_4PROD2 = ModdedBuilding(
 ASSEMBLER3_3PROD2_1SPEED1 = ModdedBuilding(
     'assembler-3:3×prod2,1×speed1', ASSEMBLER3,
     [PRODUCTIVITY2, PRODUCTIVITY2, PRODUCTIVITY2, SPEED1])
+ASSEMBLER_NOPROD = ASSEMBLER2
 ASSEMBLER = ASSEMBLER2_2PROD1
 
 CHEMICAL_PLANT = Building('chemical-plant', 1, slots=3)
@@ -127,17 +129,17 @@ RECIPES = [
         Ingredient('electric-furnace', 1),
         Ingredient('productivity-module-1', 1),
     ]),
-    Recipe('rail', ASSEMBLER, 2, secs(.5), [
+    Recipe('rail', ASSEMBLER_NOPROD, 2, secs(.5), [
         Ingredient('stone', 1),
         Ingredient('steel-plate', 1),
         Ingredient('iron-stick', 1)
     ]),
-    Recipe('electric-furnace', ASSEMBLER, 1, secs(5), [
+    Recipe('electric-furnace', ASSEMBLER_NOPROD, 1, secs(5), [
         Ingredient('steel-plate', 10),
         Ingredient('advanced-circuit', 5),
         Ingredient('stone-brick', 10)
     ]),
-    Recipe('productivity-module-1', ASSEMBLER, 1, secs(15), [
+    Recipe('productivity-module-1', ASSEMBLER_NOPROD, 1, secs(15), [
         Ingredient('electronic-circuit', 5),
         Ingredient('advanced-circuit', 5)
     ]),
@@ -171,7 +173,7 @@ RECIPES = [
     Recipe('steel-plate', FURNACE, 1, secs(16), [Ingredient('iron-plate', 5)]),
     Recipe('iron-gear-wheel', ASSEMBLER, 1, secs(.5),
            [Ingredient('iron-plate', 2)]),
-    Recipe('pipe', ASSEMBLER, 1, secs(.5), [Ingredient('iron-plate', 1)]),
+    Recipe('pipe', ASSEMBLER_NOPROD, 1, secs(.5), [Ingredient('iron-plate', 1)]),
     Recipe('iron-plate', STEEL_FURNACE, 1, secs(3.2),
            [Ingredient('iron-ore', 1)]),
     Recipe('copper-plate', STEEL_FURNACE, 1, secs(3.2),
@@ -186,19 +188,19 @@ RECIPES = [
         Ingredient('grenade', 1),
         Ingredient('wall', 2),
     ]),
-    Recipe('piercing-rounds-magazine', ASSEMBLER, 1, secs(4), [
+    Recipe('piercing-rounds-magazine', ASSEMBLER_NOPROD, 1, secs(4), [
         Ingredient('copper-plate', 5),
         Ingredient('steel-plate', 1),
         Ingredient('firearm-magazine', 1),
     ]),
-    Recipe('grenade', ASSEMBLER, 1, secs(8), [
+    Recipe('grenade', ASSEMBLER_NOPROD, 1, secs(8), [
         Ingredient('coal', 10),
         Ingredient('iron-plate', 5),
     ]),
-    Recipe('wall', ASSEMBLER, 1, secs(0.5), [
+    Recipe('wall', ASSEMBLER_NOPROD, 1, secs(0.5), [
         Ingredient('stone-brick', 5),
     ]),
-    Recipe('firearm-magazine', ASSEMBLER, 1, secs(1), [
+    Recipe('firearm-magazine', ASSEMBLER_NOPROD, 1, secs(1), [
         Ingredient('iron-plate', 4),
     ]),
     Recipe('stone-brick', FURNACE, 1, secs(3.2), [
