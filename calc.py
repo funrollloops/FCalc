@@ -92,7 +92,7 @@ class Recipe(NamedTuple):
 
 RAWS = set(['petroleum-gas', 'heavy-oil'])
 
-RECIPES = [
+RECIPE_LIST = [
     Recipe('utility-science-pack', ASSEMBLER, 3, secs(21), [
         Ingredient('processing-unit', 2),
         Ingredient('flying-robot-frame', 1),
@@ -217,7 +217,7 @@ RECIPES = [
     ]),
 ]
 
-RECIPES = {r.name: r for r in RECIPES}
+RECIPES: dict[str, Recipe] = {r.name: r for r in RECIPE_LIST}
 
 
 def check_recipes():
@@ -250,10 +250,10 @@ def belts(items_per_sec: float):
 
 def calculate_recursive(name: str, items_per_second: float,
                         totals: dict[str, Totals], deferred: set[str],
-                        output: TextIO):
+                        output: TextIO) -> dict[str, Totals]:
 
   def process(name: str, items_per_sec: float,
-              depth: int) -> dict[name, Totals]:
+              depth: int):
     totals.setdefault(name, Totals())
     totals[name].items_per_sec += items_per_sec
     if name in RAWS or (name in deferred and depth != 0):
@@ -281,13 +281,13 @@ def calculate_recursive(name: str, items_per_second: float,
 
 
 def print_totals(totals: dict[str, Totals], output: TextIO):
-  for name, totals in sorted(totals.items(),
+  for name, total in sorted(totals.items(),
                              key=lambda i:
                              (RECIPES[i[0]].building.name
                               if i[0] in RECIPES else 'xx', i[0])):
     output.write(
         "% 6.1f🏭 % 7.2f/sec % 6.1f| %s (%s)\n" %
-        (totals.buildings, totals.items_per_sec, totals.items_per_sec / 7.5,
+        (total.buildings, total.items_per_sec, total.items_per_sec / 7.5,
          name, RECIPES[name].building.name if name in RECIPES else 'raw'))
 
 
