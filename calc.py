@@ -2,9 +2,6 @@
 
 from dataclasses import dataclass
 from datetime import timedelta
-from io import IncrementalNewlineDecoder
-from math import ceil
-from queue import Queue
 from typing import NamedTuple, TextIO
 from sys import stdout, argv
 
