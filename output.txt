@@ -1,58 +1,53 @@
 
- 0.75/s   7.2🏭 utility-science-pack (assembler-2:2×prod1)
+ 0.75/s   7.2🏭 utility-science-pack (assembler-2:2p₁)
    0.46/s processing-unit
-   0.23/s   6.4🏭 flying-robot-frame (assembler-2:2×prod1)
+   0.23/s   6.4🏭 flying-robot-frame (assembler-2:2p₁)
      0.21/s steel-plate
      0.43/s   1.7🏭 battery (chemical-plant)
        0.43/s iron-plate
        0.43/s copper-plate
-       8.57/s   1.1| sulfuric-acid
+       8.57/s   1.1┋ sulfuric-acid
      0.64/s electronic-circuit
-     0.21/s   2.9🏭 electric-engine-unit (assembler-2:2×prod1)
+     0.21/s   2.9🏭 electric-engine-unit (assembler-2:2p₁)
        0.40/s electronic-circuit
-       0.20/s   2.7🏭 engine-unit (assembler-2:2×prod1)
+       0.20/s   2.7🏭 engine-unit (assembler-2:2p₁)
          0.18/s steel-plate
-         0.18/s   0.1🏭 iron-gear-wheel (assembler-2:2×prod1)
+         0.18/s   0.1🏭 iron-gear-wheel (assembler-2:2p₁)
            0.34/s iron-plate
          0.37/s   0.2🏭 pipe (assembler-2)
            0.37/s iron-plate
        2.98/s   0.3🏭 lubricant (chemical-plant)
          2.98/s heavy-oil
-   0.69/s  19.1🏭 low-density-structure (assembler-2:2×prod1)
-     1.29/s steel-plate
-     12.86/s   1.7| copper-plate
-     3.22/s   1.6🏭 plastic-bar (chemical-plant)
-       1.61/s   3.2🏭 coal (electric-mining-drill)
-       32.15/s   4.3| petroleum-gas
+   0.69/s low-density-structure
 
- 0.75/s   7.2🏭 production-science-pack (assembler-2:2×prod1)
+ 0.75/s   7.2🏭 production-science-pack (assembler-2:2p₁)
    6.94/s   2.3🏭 rail (assembler-2)
      3.47/s stone
      3.47/s steel-plate
-     3.47/s   1.2🏭 iron-stick (assembler-2:2×prod1)
+     3.47/s   1.2🏭 iron-stick (assembler-2:2p₁)
        1.61/s iron-plate
    0.23/s   1.5🏭 electric-furnace (assembler-2)
      2.31/s steel-plate
      1.16/s advanced-circuit
-     2.31/s   3.8🏭 stone-brick (electric-furnace:2xprod1)
+     2.31/s   3.8🏭 stone-brick (electric-furnace:2p₁)
        4.29/s stone
    0.23/s   4.6🏭 productivity-module-1 (assembler-2)
      1.16/s electronic-circuit
      1.16/s advanced-circuit
 
- 0.75/s  12.3🏭 chemical-science-pack (assembler-2:2×prod1)
+ 0.75/s  12.3🏭 chemical-science-pack (assembler-2:2p₁)
    0.35/s   0.2🏭 sulfur (chemical-plant)
      5.21/s   0.0🏭 water (water-pump)
      5.21/s petroleum-gas
    1.04/s advanced-circuit
-   0.69/s   9.5🏭 engine-unit (assembler-2:2×prod1)
+   0.69/s   9.5🏭 engine-unit (assembler-2:2p₁)
      0.64/s steel-plate
-     0.64/s   0.4🏭 iron-gear-wheel (assembler-2:2×prod1)
+     0.64/s   0.4🏭 iron-gear-wheel (assembler-2:2p₁)
        1.19/s iron-plate
      1.29/s   0.9🏭 pipe (assembler-2)
        1.29/s iron-plate
 
- 0.75/s   5.1🏭 military-science-pack (assembler-2:2×prod1)
+ 0.75/s   5.1🏭 military-science-pack (assembler-2:2p₁)
    0.35/s   1.9🏭 piercing-rounds-magazine (assembler-2)
      1.74/s copper-plate
      0.35/s steel-plate
@@ -62,81 +57,132 @@
      3.47/s   6.9🏭 coal (electric-mining-drill)
      1.74/s iron-plate
    0.69/s   0.5🏭 wall (assembler-2)
-     3.47/s   5.7🏭 stone-brick (electric-furnace:2xprod1)
+     3.47/s   5.7🏭 stone-brick (electric-furnace:2p₁)
        6.43/s stone
 
- 1.00/s  13.7🏭 processing-unit (assembler-2:2×prod1)
-   18.52/s   2.5| electronic-circuit
-   1.85/s advanced-circuit
-   4.63/s sulfuric-acid
+ 0.75/s   0.0🏭 space-science-pack (rocket-silo)
+   0.07/s   0.4🏭 rocket-part (rocket-silo:4p₃)
+     0.54/s  22.0🏭 rocket-control-unit (assembler-2:2p₁)
+       0.50/s processing-unit
+       0.50/s  10.2🏭 speed-module-1 (assembler-2:2p₁)
+         2.30/s electronic-circuit
+         2.30/s advanced-circuit
+     0.54/s rocket-fuel
+     0.54/s low-density-structure
+   0.00/s   0.0🏭 satellite (assembler-2:2p₁)
+     0.07/s processing-unit
+     0.07/s low-density-structure
+     0.03/s rocket-fuel
+     0.07/s   1.0🏭 solar-panel (assembler-2:2p₁)
+       0.32/s copper-plate
+       0.32/s steel-plate
+       0.96/s electronic-circuit
+     0.07/s   1.0🏭 accumulator (assembler-2:2p₁)
+       0.13/s iron-plate
+       0.32/s   1.3🏭 battery (chemical-plant)
+         0.32/s iron-plate
+         0.32/s copper-plate
+         6.43/s sulfuric-acid
+     0.00/s   0.0🏭 radar (assembler-2:2p₁)
+       0.03/s iron-plate
+       0.02/s   0.0🏭 iron-gear-wheel (assembler-2:2p₁)
+         0.03/s iron-plate
+       0.02/s electronic-circuit
 
- 5.21/s  42.9🏭 advanced-circuit (assembler-2:2×prod1)
-   9.65/s   1.3|   4.8🏭 plastic-bar (chemical-plant)
-     4.82/s   9.6🏭 coal (electric-mining-drill)
-     96.45/s  12.9| petroleum-gas
-   19.29/s   2.6|   5.2🏭 copper-cable (assembler-3:4×prod2)
-     7.78/s   1.0| copper-plate
-   9.65/s   1.3| electronic-circuit
+ 1.03/s  14.1🏭 processing-unit (assembler-2:2p₁)
+   19.05/s   2.5┋ electronic-circuit
+   1.90/s advanced-circuit
+   4.76/s sulfuric-acid
 
- 30.36/s   4.0|  16.3🏭 electronic-circuit (assembler-3:4×prod2)
-   24.48/s   3.3| iron-plate
-   73.45/s   9.8|  19.7🏭 copper-cable (assembler-3:4×prod2)
-     29.62/s   3.9| copper-plate
+ 7.56/s   1.0┋  62.2🏭 advanced-circuit (assembler-2:2p₁)
+   14.00/s   1.9┋   7.0🏭 plastic-bar (chemical-plant)
+     7.00/s  14.0🏭 coal (electric-mining-drill)
+     139.95/s  18.7┋ petroleum-gas
+   27.99/s   3.7┋   1.5🏭 copper-cable (assembler-3:4p₂☸16s₂)
+     11.29/s   1.5┋ copper-plate
+   14.00/s   1.9┋ electronic-circuit
 
- 13.20/s   1.8|   0.3🏭 sulfuric-acid (chemical-plant)
-   0.26/s iron-plate
-   1.32/s   0.7🏭 sulfur (chemical-plant)
-     19.80/s   2.6|   0.0🏭 water (water-pump)
-     19.80/s   2.6| petroleum-gas
-   26.41/s   3.5|   0.0🏭 water (water-pump)
+ 38.51/s   5.1┋   4.1🏭 electronic-circuit (assembler-3:4p₂☸16s₂)
+   31.06/s   4.1┋ iron-plate
+   93.18/s  12.4┋   5.0🏭 copper-cable (assembler-3:4p₂☸16s₂)
+     37.57/s   5.0┋ copper-plate
 
- 14.19/s   1.9|  28.4🏭 stone (electric-mining-drill)
+ 1.30/s  35.7🏭 low-density-structure (assembler-2:2p₁)
+   2.41/s steel-plate
+   24.07/s   3.2┋ copper-plate
+   6.02/s   3.0🏭 plastic-bar (chemical-plant)
+     3.01/s   6.0🏭 coal (electric-mining-drill)
+     60.17/s   8.0┋ petroleum-gas
 
- 8.46/s   1.1|  69.6🏭 steel-plate (electric-furnace:2xprod1)
-   39.17/s   5.2| iron-plate
+ 0.57/s  23.5🏭 rocket-fuel (assembler-2:2p₁)
+   5.28/s solid-fuel
+   5.28/s light-oil
 
- 72.27/s   9.6|  115.6🏭 iron-plate (steel-furnace)
-   72.27/s   9.6|  144.5🏭 iron-ore (electric-mining-drill)
+ 19.76/s   2.6┋   0.4🏭 sulfuric-acid (chemical-plant)
+   0.40/s iron-plate
+   1.98/s   1.0🏭 sulfur (chemical-plant)
+     29.65/s   4.0┋   0.0🏭 water (water-pump)
+     29.65/s   4.0┋ petroleum-gas
+   39.53/s   5.3┋   0.0🏭 water (water-pump)
 
- 52.42/s   7.0|  83.9🏭 copper-plate (steel-furnace)
-   52.42/s   7.0|  104.8🏭 copper-ore (electric-mining-drill)
+ 14.19/s   1.9┋  28.4🏭 stone (electric-mining-drill)
+
+ 9.90/s   1.3┋  81.5🏭 steel-plate (electric-furnace:2p₁)
+   45.85/s   6.1┋ iron-plate
+
+ 86.16/s  11.5┋  137.9🏭 iron-plate (steel-furnace)
+   86.16/s  11.5┋  172.3🏭 iron-ore (electric-mining-drill)
+
+ 75.73/s  10.1┋  121.2🏭 copper-plate (steel-furnace)
+   75.73/s  10.1┋  151.5🏭 copper-ore (electric-mining-drill)
 
 ## Totals
-   1.5🏭    0.23/sec    0.0| electric-furnace (assembler-2)
-   0.5🏭    0.35/sec    0.0| firearm-magazine (assembler-2)
-   3.7🏭    0.35/sec    0.0| grenade (assembler-2)
-   1.9🏭    0.35/sec    0.0| piercing-rounds-magazine (assembler-2)
-   1.1🏭    1.65/sec    0.2| pipe (assembler-2)
-   4.6🏭    0.23/sec    0.0| productivity-module-1 (assembler-2)
-   2.3🏭    6.94/sec    0.9| rail (assembler-2)
-   0.5🏭    0.69/sec    0.1| wall (assembler-2)
-  42.9🏭    5.21/sec    0.7| advanced-circuit (assembler-2:2×prod1)
-  12.3🏭    0.75/sec    0.1| chemical-science-pack (assembler-2:2×prod1)
-   2.9🏭    0.21/sec    0.0| electric-engine-unit (assembler-2:2×prod1)
-  12.2🏭    0.89/sec    0.1| engine-unit (assembler-2:2×prod1)
-   6.4🏭    0.23/sec    0.0| flying-robot-frame (assembler-2:2×prod1)
-   0.6🏭    0.83/sec    0.1| iron-gear-wheel (assembler-2:2×prod1)
-   1.2🏭    3.47/sec    0.5| iron-stick (assembler-2:2×prod1)
-  19.1🏭    0.69/sec    0.1| low-density-structure (assembler-2:2×prod1)
-   5.1🏭    0.75/sec    0.1| military-science-pack (assembler-2:2×prod1)
-  13.7🏭    1.00/sec    0.1| processing-unit (assembler-2:2×prod1)
-   7.2🏭    0.75/sec    0.1| production-science-pack (assembler-2:2×prod1)
-   7.2🏭    0.75/sec    0.1| utility-science-pack (assembler-2:2×prod1)
-  24.9🏭   92.74/sec   12.4| copper-cable (assembler-3:4×prod2)
-  16.3🏭   30.36/sec    4.0| electronic-circuit (assembler-3:4×prod2)
-   1.7🏭    0.43/sec    0.1| battery (chemical-plant)
-   0.3🏭    2.98/sec    0.4| lubricant (chemical-plant)
-   6.4🏭   12.86/sec    1.7| plastic-bar (chemical-plant)
-   0.8🏭    1.67/sec    0.2| sulfur (chemical-plant)
-   0.3🏭   13.20/sec    1.8| sulfuric-acid (chemical-plant)
-  69.6🏭    8.46/sec    1.1| steel-plate (electric-furnace:2xprod1)
-   9.5🏭    5.79/sec    0.8| stone-brick (electric-furnace:2xprod1)
-  19.8🏭    9.90/sec    1.3| coal (electric-mining-drill)
- 104.8🏭   52.42/sec    7.0| copper-ore (electric-mining-drill)
- 144.5🏭   72.27/sec    9.6| iron-ore (electric-mining-drill)
-  28.4🏭   14.19/sec    1.9| stone (electric-mining-drill)
-  83.9🏭   52.42/sec    7.0| copper-plate (steel-furnace)
- 115.6🏭   72.27/sec    9.6| iron-plate (steel-furnace)
-   0.0🏭   51.42/sec    6.9| water (water-pump)
-   0.0🏭    2.98/sec    0.4| heavy-oil (raw)
-   0.0🏭  153.61/sec   20.5| petroleum-gas (raw)
+   1.5🏭    0.23/sec    0.0┋ electric-furnace (assembler-2)
+   0.5🏭    0.35/sec    0.0┋ firearm-magazine (assembler-2)
+   3.7🏭    0.35/sec    0.0┋ grenade (assembler-2)
+   1.9🏭    0.35/sec    0.0┋ piercing-rounds-magazine (assembler-2)
+   1.1🏭    1.65/sec    0.2┋ pipe (assembler-2)
+   4.6🏭    0.23/sec    0.0┋ productivity-module-1 (assembler-2)
+   2.3🏭    6.94/sec    0.9┋ rail (assembler-2)
+   0.5🏭    0.69/sec    0.1┋ wall (assembler-2)
+   1.0🏭    0.07/sec    0.0┋ accumulator (assembler-2:2p₁)
+  62.2🏭    7.56/sec    1.0┋ advanced-circuit (assembler-2:2p₁)
+  12.3🏭    0.75/sec    0.1┋ chemical-science-pack (assembler-2:2p₁)
+   2.9🏭    0.21/sec    0.0┋ electric-engine-unit (assembler-2:2p₁)
+  12.2🏭    0.89/sec    0.1┋ engine-unit (assembler-2:2p₁)
+   6.4🏭    0.23/sec    0.0┋ flying-robot-frame (assembler-2:2p₁)
+   0.6🏭    0.84/sec    0.1┋ iron-gear-wheel (assembler-2:2p₁)
+   1.2🏭    3.47/sec    0.5┋ iron-stick (assembler-2:2p₁)
+  35.7🏭    1.30/sec    0.2┋ low-density-structure (assembler-2:2p₁)
+   5.1🏭    0.75/sec    0.1┋ military-science-pack (assembler-2:2p₁)
+  14.1🏭    1.03/sec    0.1┋ processing-unit (assembler-2:2p₁)
+   7.2🏭    0.75/sec    0.1┋ production-science-pack (assembler-2:2p₁)
+   0.0🏭    0.00/sec    0.0┋ radar (assembler-2:2p₁)
+  22.0🏭    0.54/sec    0.1┋ rocket-control-unit (assembler-2:2p₁)
+  23.5🏭    0.57/sec    0.1┋ rocket-fuel (assembler-2:2p₁)
+   0.0🏭    0.00/sec    0.0┋ satellite (assembler-2:2p₁)
+   1.0🏭    0.07/sec    0.0┋ solar-panel (assembler-2:2p₁)
+  10.2🏭    0.50/sec    0.1┋ speed-module-1 (assembler-2:2p₁)
+   7.2🏭    0.75/sec    0.1┋ utility-science-pack (assembler-2:2p₁)
+   6.5🏭  121.17/sec   16.2┋ copper-cable (assembler-3:4p₂☸16s₂)
+   4.1🏭   38.51/sec    5.1┋ electronic-circuit (assembler-3:4p₂☸16s₂)
+   3.0🏭    0.75/sec    0.1┋ battery (chemical-plant)
+   0.3🏭    2.98/sec    0.4┋ lubricant (chemical-plant)
+  10.0🏭   20.01/sec    2.7┋ plastic-bar (chemical-plant)
+   1.2🏭    2.32/sec    0.3┋ sulfur (chemical-plant)
+   0.4🏭   19.76/sec    2.6┋ sulfuric-acid (chemical-plant)
+  81.5🏭    9.90/sec    1.3┋ steel-plate (electric-furnace:2p₁)
+   9.5🏭    5.79/sec    0.8┋ stone-brick (electric-furnace:2p₁)
+  27.0🏭   13.48/sec    1.8┋ coal (electric-mining-drill)
+ 151.5🏭   75.73/sec   10.1┋ copper-ore (electric-mining-drill)
+ 172.3🏭   86.16/sec   11.5┋ iron-ore (electric-mining-drill)
+  28.4🏭   14.19/sec    1.9┋ stone (electric-mining-drill)
+   0.0🏭    0.75/sec    0.1┋ space-science-pack (rocket-silo)
+   0.4🏭    0.07/sec    0.0┋ rocket-part (rocket-silo:4p₃)
+ 121.2🏭   75.73/sec   10.1┋ copper-plate (steel-furnace)
+ 137.9🏭   86.16/sec   11.5┋ iron-plate (steel-furnace)
+   0.1🏭   74.38/sec    9.9┋ water (water-pump)
+   0.0🏭    2.98/sec    0.4┋ heavy-oil (raw)
+   0.0🏭    5.28/sec    0.7┋ light-oil (raw)
+   0.0🏭  234.97/sec   31.3┋ petroleum-gas (raw)
+   0.0🏭    5.28/sec    0.7┋ solid-fuel (raw)

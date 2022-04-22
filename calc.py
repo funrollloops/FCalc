@@ -45,32 +45,36 @@ class ModdedBuilding(Building):
     self.crafting_speed = building.crafting_speed * crafting_multiplier
 
 
-PRODUCTIVITY1 = Module('prod1', crafting_speed=-0.05, productivity=0.04)
-PRODUCTIVITY2 = Module('prod2', crafting_speed=-0.10, productivity=0.06)
-SPEED1 = Module('spd1', crafting_speed=0.2, power=0.5)
-SPEED2 = Module('spd2', crafting_speed=0.3, power=0.6)
-EFFICIENCY1 = Module('eff1', power=-0.3)
+PRODUCTIVITY1 = Module('prod-1', crafting_speed=-0.05, productivity=0.04)
+PRODUCTIVITY2 = Module('prod-2', crafting_speed=-0.10, productivity=0.06)
+PRODUCTIVITY3 = Module('prod-3', crafting_speed=-0.15, productivity=0.10)
+SPEED1 = Module('speed-1', crafting_speed=0.2, power=0.5)
+SPEED2 = Module('speed-2', crafting_speed=0.3, power=0.6)
+EFFICIENCY1 = Module('efficiency-1', power=-0.3)
 STONE_FURNACE = Building('stone-furnace', 1)
 STEEL_FURNACE = Building('steel-furnace', 2)
 ELECTRIC_FURNACE = Building('electric-furnace', 2, slots=2)
-FURNACE = ModdedBuilding('electric-furnace:2xprod1', ELECTRIC_FURNACE,
+FURNACE = ModdedBuilding('electric-furnace:2p₁', ELECTRIC_FURNACE,
                          [PRODUCTIVITY1, PRODUCTIVITY1])
 
 ASSEMBLER1 = Building('assembler-1', .5)
 ASSEMBLER2 = Building('assembler-2', .75, slots=2)
 ASSEMBLER3 = Building('assembler-3', 1.25, slots=4)
-ASSEMBLER2_2PROD1 = ModdedBuilding('assembler-2:2×prod1', ASSEMBLER2,
+ASSEMBLER2_2PROD1 = ModdedBuilding('assembler-2:2p₁', ASSEMBLER2,
                                    [PRODUCTIVITY1, PRODUCTIVITY1])
-ASSEMBLER3_4PROD2 = ModdedBuilding('assembler-3:4×prod2', ASSEMBLER3,
+ASSEMBLER3_4PROD2 = ModdedBuilding('assembler-3:4p₂', ASSEMBLER3,
                                    [PRODUCTIVITY2] * 4)
-ASSEMBLER3_3PROD2_1SPEED1 = ModdedBuilding('assembler-3:3×prod2,1×speed1',
+ASSEMBLER3_3PROD2_1SPEED1 = ModdedBuilding('assembler-3:3p₂s₁',
                                            ASSEMBLER3,
                                            [PRODUCTIVITY2] * 3 + [SPEED1])
-ASSEMBLER3_4PROD2_16SPDBCON = ModdedBuilding('assembler-3:4xprod2:16xspd2',
+ASSEMBLER3_4PROD2_16SPDBCON = ModdedBuilding('assembler-3:4p₂☸16s₂',
                                              ASSEMBLER3, [PRODUCTIVITY2] * 4,
                                              [SPEED2] * 16)
 ASSEMBLER_NOPROD = ASSEMBLER2
 ASSEMBLER = ASSEMBLER2_2PROD1
+
+SILO = Building('rocket-silo', 1, slots=4)
+SILO_4PROD3 = ModdedBuilding('rocket-silo:4p₃', SILO, [PRODUCTIVITY3]*4)
 
 CHEMICAL_PLANT = Building('chemical-plant', 1, slots=3)
 ELECTRIC_MINING_DRILL = Building('electric-mining-drill', .5, slots=3)
@@ -90,9 +94,52 @@ class Recipe(NamedTuple):
   ingredients: list[Ingredient]
 
 
-RAWS = set(['petroleum-gas', 'heavy-oil'])
+RAWS = set(['petroleum-gas', 'heavy-oil', 'solid-fuel', 'light-oil'])
 
 RECIPE_LIST = [
+    Recipe('space-science-pack', SILO, 1000, secs(4), [
+        Ingredient('rocket-part', 100),
+        Ingredient('satellite', 1)
+    ]),
+    Recipe('rocket-part', SILO_4PROD3, 1, secs(3), [
+        Ingredient('rocket-control-unit', 10),
+        Ingredient('rocket-fuel', 10),
+        Ingredient('low-density-structure', 10),
+    ]),
+    Recipe('satellite', ASSEMBLER, 1, secs(5), [
+      Ingredient('processing-unit', 100),
+      Ingredient('low-density-structure', 100),
+      Ingredient('rocket-fuel', 50),
+      Ingredient('solar-panel', 100),
+      Ingredient('accumulator', 100),
+      Ingredient('radar', 5)
+    ]),
+    Recipe('solar-panel', ASSEMBLER, 1, secs(10), [
+      Ingredient('copper-plate', 5),
+      Ingredient('steel-plate', 5),
+      Ingredient('electronic-circuit', 15)
+    ]),
+    Recipe('accumulator', ASSEMBLER, 1, secs(10), [
+      Ingredient('iron-plate', 2),
+      Ingredient('battery', 5)
+    ]),
+    Recipe('radar', ASSEMBLER, 1, secs(0.5), [
+      Ingredient('iron-plate', 10),
+      Ingredient('iron-gear-wheel', 5),
+      Ingredient('electronic-circuit', 5)
+    ]),
+    Recipe('rocket-control-unit', ASSEMBLER, 1, secs(30), [
+        Ingredient('processing-unit', 1),
+        Ingredient('speed-module-1', 1)
+    ]),
+    Recipe('rocket-fuel', ASSEMBLER, 1, secs(30), [
+        Ingredient('solid-fuel', 10),
+        Ingredient('light-oil', 10)
+    ]),
+    Recipe('speed-module-1', ASSEMBLER, 1, secs(15), [
+        Ingredient('electronic-circuit', 5),
+        Ingredient('advanced-circuit', 5)
+    ]),
     Recipe('utility-science-pack', ASSEMBLER, 3, secs(21), [
         Ingredient('processing-unit', 2),
         Ingredient('flying-robot-frame', 1),
@@ -245,7 +292,7 @@ class Totals:
 def belts(items_per_sec: float):
   if items_per_sec <= 7.5:
     return ''
-  return ' %5.1f|' % (items_per_sec / 7.5)
+  return ' %5.1f┋' % (items_per_sec / 7.5)
 
 
 def calculate_recursive(name: str, items_per_second: float,
@@ -286,7 +333,7 @@ def print_totals(totals: dict[str, Totals], output: TextIO):
                              (RECIPES[i[0]].building.name
                               if i[0] in RECIPES else 'xx', i[0])):
     output.write(
-        "% 6.1f🏭 % 7.2f/sec % 6.1f| %s (%s)\n" %
+        "% 6.1f🏭 % 7.2f/sec % 6.1f┋ %s (%s)\n" %
         (total.buildings, total.items_per_sec, total.items_per_sec / 7.5,
          name, RECIPES[name].building.name if name in RECIPES else 'raw'))
 
@@ -330,20 +377,25 @@ def main(args):
           Demand('production-science-pack', .75),
           Demand('chemical-science-pack', .75),
           Demand('military-science-pack', .75),
+          Demand('space-science-pack', .75),
 
           # Subfactories.
-          Demand('processing-unit', 1),
-          Demand('advanced-circuit', 4),
+          Demand('processing-unit', 0),
+          Demand('advanced-circuit', 0),
           Demand('electronic-circuit', 0),
+          Demand('low-density-structure', 0),
+          Demand('rocket-fuel', 0),
           Demand('sulfuric-acid', 0),
           Demand('stone', 0),
           Demand('steel-plate', 0),
           Demand('iron-plate', 0),
-          Demand('copper-plate', 0)
+          Demand('copper-plate', 0),
       ],
       output)
 
   output.close()
+
+
 
 
 if __name__ == "__main__":
