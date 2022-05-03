@@ -147,7 +147,7 @@ RECIPE_LIST = [
     Ingredient('chlorine', 12.5),
     Ingredient('hydrogen', 10)
   ]),
-  Recipe('circuit-board', ASSEMBLER, 1, secs(5), [
+  Recipe('circuit-board', ELECTRONICS_ASSEMBLER, 1, secs(5), [
     Ingredient('phenolic-board'),
     Ingredient('copper-plate'),
     Ingredient('tin-plate')

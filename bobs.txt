@@ -32,7 +32,7 @@
        1.60/s   0.2🏭 copper-cable (electronics-assembler-2)
          0.80/s copper-plate
        0.53/s tin-plate
-   2.00/s  13.3🏭 circuit-board (assembler-2)
+   2.00/s   4.4🏭 circuit-board (electronics-assembler-2)
      2.00/s   0.2🏭 phenolic-board (electronics-assembler-2)
        1.00/s   5.3🏭 wood (greenhouse)
          0.67/s seedling
@@ -43,14 +43,15 @@
      2.00/s tin-plate
 
 ## Totals
-  13.3🏭    2.00/sec    0.3┋ circuit-board (assembler-2)
    2.7🏭    3.20/sec    0.4┋ silicon-wafer (assembler-2)
    0.4🏭    0.40/sec    0.1┋ calcium-chloride (chemical-plant)
+   0.0🏭    8.00/sec    1.1┋ hydrogen (chemical-plant)
    0.8🏭   20.00/sec    2.7┋ hydrogen-chloride (chemical-plant)
    0.8🏭    0.40/sec    0.1┋ limestone (chemical-plant)
    1.2🏭    1.25/sec    0.2┋ resin (chemical-plant)
    1.7🏭    0.40/sec    0.1┋ silicon-plate (electrolyser)
    1.4🏭    8.00/sec    1.1┋ basic-electronic-components (electronics-assembler-2)
+   4.4🏭    2.00/sec    0.3┋ circuit-board (electronics-assembler-2)
    0.4🏭    3.20/sec    0.4┋ copper-cable (electronics-assembler-2)
    4.4🏭    2.00/sec    0.3┋ electronic-circuit-board (electronics-assembler-2)
    0.2🏭    2.00/sec    0.3┋ phenolic-board (electronics-assembler-2)
@@ -65,7 +66,6 @@
    0.0🏭    0.90/sec    0.1┋ coal (raw)
    0.0🏭    3.60/sec    0.5┋ copper-plate (raw)
    0.0🏭   12.50/sec    1.7┋ heavy-oil (raw)
-   0.0🏭    8.00/sec    1.1┋ hydrogen (raw)
    0.0🏭    0.64/sec    0.1┋ lead-plate (raw)
    0.0🏭    1.60/sec    0.2┋ plastic-bar (raw)
    0.0🏭    0.67/sec    0.1┋ seedling (raw)
