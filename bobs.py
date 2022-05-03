@@ -157,8 +157,10 @@ RECIPE_LIST = [
     Ingredient('wood'),
     Ingredient('resin')
   ]),
-  Recipe('resin', ASSEMBLER, 1, secs(1), [
-    #Ingredient('wood')
+ #Recipe('resin', ASSEMBLER, 1, secs(1), [
+ #  Ingredient('wood')
+ #]),
+  Recipe('resin', CHEMICAL_PLANT, 1, secs(1), [
     Ingredient('heavy-oil', 10)
   ]),
   Recipe('wood', GREENHOUSE, 15, secs(60), [
