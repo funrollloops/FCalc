@@ -1,4 +1,23 @@
 
+ 1.00/s   9.3🏭 chemical-science-pack (assembler-2)
+   0.50/s   0.1🏭 sulfur (chemical-plant)
+     5.00/s hydrogen-sulfide
+     2.50/s   0.2🏭 oxygen (chemical-plant)
+       2.00/s   0.0🏭 pure-water (chemical-plant)
+         2.00/s water
+   1.00/s  13.3🏭 engine-unit (assembler-2)
+     1.00/s steel-plate
+     1.00/s   0.7🏭 iron-gear-wheel (assembler-2)
+       2.00/s iron-plate
+     1.00/s   0.7🏭 iron-pipe (assembler-2)
+       1.00/s iron-plate
+   1.00/s   2.7🏭 sodium-hydroxide (electrolyser)
+     1.00/s   0.2🏭 salt (steel-chemical-furnace)
+       25.00/s   3.3┋ water
+     10.00/s   1.3┋   0.2🏭 pure-water (chemical-plant)
+       10.00/s   1.3┋ water
+   1.50/s electronic-circuit-board
+
  2.00/s   4.4🏭 electronic-circuit-board (electronics-assembler-2)
    2.00/s   0.2🏭 solder (electronics-assembler-2)
      0.25/s   0.2🏭 resin (chemical-plant)
@@ -43,13 +62,21 @@
      2.00/s tin-plate
 
 ## Totals
+   9.3🏭    1.00/sec    0.1┋ chemical-science-pack (assembler-2)
+  13.3🏭    1.00/sec    0.1┋ engine-unit (assembler-2)
+   0.7🏭    1.00/sec    0.1┋ iron-gear-wheel (assembler-2)
+   0.7🏭    1.00/sec    0.1┋ iron-pipe (assembler-2)
    2.7🏭    3.20/sec    0.4┋ silicon-wafer (assembler-2)
    0.4🏭    0.40/sec    0.1┋ calcium-chloride (chemical-plant)
    0.0🏭    8.00/sec    1.1┋ hydrogen (chemical-plant)
    0.8🏭   20.00/sec    2.7┋ hydrogen-chloride (chemical-plant)
    0.8🏭    0.40/sec    0.1┋ limestone (chemical-plant)
+   0.2🏭    2.50/sec    0.3┋ oxygen (chemical-plant)
+   0.2🏭   12.00/sec    1.6┋ pure-water (chemical-plant)
    1.2🏭    1.25/sec    0.2┋ resin (chemical-plant)
+   0.1🏭    0.50/sec    0.1┋ sulfur (chemical-plant)
    1.7🏭    0.40/sec    0.1┋ silicon-plate (electrolyser)
+   2.7🏭    1.00/sec    0.1┋ sodium-hydroxide (electrolyser)
    1.4🏭    8.00/sec    1.1┋ basic-electronic-components (electronics-assembler-2)
    4.4🏭    2.00/sec    0.3┋ circuit-board (electronics-assembler-2)
    0.4🏭    3.20/sec    0.4┋ copper-cable (electronics-assembler-2)
@@ -60,15 +87,19 @@
    2.5🏭    8.00/sec    1.1┋ transistors (electronics-assembler-2)
    5.3🏭    1.00/sec    0.1┋ wood (greenhouse)
    0.9🏭    1.80/sec    0.2┋ carbon (steel-chemical-furnace)
+   0.2🏭    1.00/sec    0.1┋ salt (steel-chemical-furnace)
    0.3🏭    1.00/sec    0.1┋ solder-plate (steel-metal-mixing-furnace)
-   0.0🏭    5.83/sec    0.8┋ water (water-pump)
+   0.0🏭   42.83/sec    5.7┋ water (water-pump)
    0.0🏭   10.00/sec    1.3┋ chlorine (raw)
    0.0🏭    0.90/sec    0.1┋ coal (raw)
    0.0🏭    3.60/sec    0.5┋ copper-plate (raw)
    0.0🏭   12.50/sec    1.7┋ heavy-oil (raw)
+   0.0🏭    5.00/sec    0.7┋ hydrogen-sulfide (raw)
+   0.0🏭    3.00/sec    0.4┋ iron-plate (raw)
    0.0🏭    0.64/sec    0.1┋ lead-plate (raw)
    0.0🏭    1.60/sec    0.2┋ plastic-bar (raw)
    0.0🏭    0.67/sec    0.1┋ seedling (raw)
    0.0🏭    0.40/sec    0.1┋ silicon-ore (raw)
+   0.0🏭    1.00/sec    0.1┋ steel-plate (raw)
    0.0🏭    0.40/sec    0.1┋ stone (raw)
    0.0🏭    3.43/sec    0.5┋ tin-plate (raw)

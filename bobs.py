@@ -97,14 +97,42 @@ class Recipe(NamedTuple):
   ingredients: list[Ingredient]
 
 
-RAWS = set(['petroleum-gas', 'heavy-oil', 'solid-fuel', 'light-oil', 'seedling', 'water', 'tin-plate', 'lead-plate', 'coal', 'copper-plate', 'plastic-bar', 'silicon-ore', 'chlorine', 'hydrogen', 'stone', 'pure-water'])
+RAWS = set(['petroleum-gas', 'heavy-oil', 'solid-fuel', 'light-oil', 'seedling', 'water', 'tin-plate', 'lead-plate', 'coal', 'copper-plate', 'plastic-bar', 'silicon-ore', 'chlorine', 'hydrogen', 'stone', 'steel-plate', 'iron-plate', 'hydrogen-sulfide'])
 
 RECIPE_LIST = [
+  Recipe('chemical-science-pack', ASSEMBLER, 2, secs(14), [
+    Ingredient('sulfur'),
+    Ingredient('engine-unit', 2),
+    Ingredient('sodium-hydroxide', 2),
+    Ingredient('electronic-circuit-board', 3)
+  ]),
+  Recipe('sulfur', CHEMICAL_PLANT, 5, secs(1), [
+    Ingredient('hydrogen-sulfide', 50),
+    Ingredient('oxygen', 25)
+  ]),
+  Recipe('engine-unit', ASSEMBLER, 1, secs(10), [
+    Ingredient('steel-plate'),
+    Ingredient('iron-gear-wheel'),
+    Ingredient('iron-pipe')
+  ]),
+  Recipe('iron-gear-wheel', ASSEMBLER, 1, secs(0.5), [
+    Ingredient('iron-plate', 2)
+  ]),
+  Recipe('iron-pipe', ASSEMBLER, 1, secs(0.5), [
+    Ingredient('iron-plate', 1)
+  ]),
+  Recipe('sodium-hydroxide', ELECTROLYSER, 1, secs(2), [
+    Ingredient('salt'),
+    Ingredient('pure-water', 10)
+  ]),
+  Recipe('salt', CHEMICAL_FURNACE, 1, secs(0.5), [
+    Ingredient('water', 25)
+  ]),
   Recipe('electronic-circuit-board', ELECTRONICS_ASSEMBLER2, 1, secs(5), [
     Ingredient('solder'),
     Ingredient('basic-electronic-components', 4),
     Ingredient('transistors', 4),
-    Ingredient('circuit-board', 1)
+    Ingredient('circuit-board')
   ]),
   Recipe('solder', ELECTRONICS_ASSEMBLER, 8, secs(2), [
     Ingredient('resin'),
@@ -196,6 +224,9 @@ RECIPE_LIST = [
   ]),
   Recipe('oxygen', CHEMICAL_PLANT, 12.5, secs(1), [
     Ingredient('pure-water', 10)
+  ]),
+  Recipe('pure-water', CHEMICAL_PLANT, 100, secs(2), [
+    Ingredient('water', 100)
   ]),
   Recipe('hydrogen', CHEMICAL_PLANT, 20, secs(1), [
     Ingredient('pure-water', 10)
@@ -324,6 +355,7 @@ def main(args):
 
   calculate(
       [
+          Demand('chemical-science-pack', 1),
           Demand('electronic-circuit-board', 2),
       ],
       output)
