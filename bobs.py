@@ -158,7 +158,8 @@ RECIPE_LIST = [
     Ingredient('resin')
   ]),
   Recipe('resin', ASSEMBLER, 1, secs(1), [
-    Ingredient('wood')
+    #Ingredient('wood')
+    Ingredient('heavy-oil', 10)
   ]),
   Recipe('wood', GREENHOUSE, 15, secs(60), [
     Ingredient('seedling', 10),

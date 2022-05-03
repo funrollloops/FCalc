@@ -2,9 +2,7 @@
  2.00/s   4.4🏭 electronic-circuit-board (electronics-assembler-2)
    2.00/s   0.2🏭 solder (electronics-assembler-2)
      0.25/s   0.3🏭 resin (assembler-2)
-       0.25/s   1.3🏭 wood (greenhouse)
-         0.17/s seedling
-         0.33/s water
+       2.50/s heavy-oil
      1.00/s   0.3🏭 solder-plate (steel-metal-mixing-furnace)
        0.36/s tin-plate
        0.64/s lead-plate
@@ -40,9 +38,7 @@
          0.67/s seedling
          1.33/s water
        1.00/s   1.3🏭 resin (assembler-2)
-         1.00/s   5.3🏭 wood (greenhouse)
-           0.67/s seedling
-           1.33/s water
+         10.00/s   1.3┋ heavy-oil
      2.00/s copper-plate
      2.00/s tin-plate
 
@@ -61,17 +57,18 @@
    0.2🏭    2.00/sec    0.3┋ solder (electronics-assembler-2)
    0.2🏭    3.20/sec    0.4┋ tinned-copper-wire (electronics-assembler-2)
    2.5🏭    8.00/sec    1.1┋ transistors (electronics-assembler-2)
-  12.0🏭    2.25/sec    0.3┋ wood (greenhouse)
+   5.3🏭    1.00/sec    0.1┋ wood (greenhouse)
    0.9🏭    1.80/sec    0.2┋ carbon (steel-chemical-furnace)
    0.3🏭    1.00/sec    0.1┋ solder-plate (steel-metal-mixing-furnace)
-   0.0🏭    7.50/sec    1.0┋ water (water-pump)
+   0.0🏭    5.83/sec    0.8┋ water (water-pump)
    0.0🏭   10.00/sec    1.3┋ chlorine (raw)
    0.0🏭    0.90/sec    0.1┋ coal (raw)
    0.0🏭    3.60/sec    0.5┋ copper-plate (raw)
+   0.0🏭   12.50/sec    1.7┋ heavy-oil (raw)
    0.0🏭    8.00/sec    1.1┋ hydrogen (raw)
    0.0🏭    0.64/sec    0.1┋ lead-plate (raw)
    0.0🏭    1.60/sec    0.2┋ plastic-bar (raw)
-   0.0🏭    1.50/sec    0.2┋ seedling (raw)
+   0.0🏭    0.67/sec    0.1┋ seedling (raw)
    0.0🏭    0.40/sec    0.1┋ silicon-ore (raw)
    0.0🏭    0.40/sec    0.1┋ stone (raw)
    0.0🏭    3.43/sec    0.5┋ tin-plate (raw)
