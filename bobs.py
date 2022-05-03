@@ -75,12 +75,14 @@ CHEMICAL_PLANT = Building('chemical-plant', 1, slots=3)
 ELECTRIC_MINING_DRILL = Building('electric-mining-drill', .5, slots=3)
 WATER_PUMP = Building('water-pump', 1)
 GREENHOUSE = Building('greenhouse', 0.75)
+COMPRESSOR1 = Building('compressor', 1)
 
 FURNACE = STEEL_FURNACE
 ASSEMBLER = ASSEMBLER2
 METAL_MIXING_FURNACE = STEEL_METAL_MIXING_FURNACE
 ELECTRONICS_ASSEMBLER = ELECTRONICS_ASSEMBLER2
 CHEMICAL_FURNACE = STEEL_CHEMICAL_FURNACE
+COMPRESSOR = COMPRESSOR1
 
 class Ingredient(NamedTuple):
   name: str
@@ -95,7 +97,7 @@ class Recipe(NamedTuple):
   ingredients: list[Ingredient]
 
 
-RAWS = set(['petroleum-gas', 'heavy-oil', 'solid-fuel', 'light-oil', 'seedling', 'water', 'tin-plate', 'lead-plate', 'coal', 'copper-plate', 'plastic-bar', 'silicon-ore', 'chlorine', 'hydrogen', 'stone'])
+RAWS = set(['petroleum-gas', 'heavy-oil', 'solid-fuel', 'light-oil', 'seedling', 'water', 'tin-plate', 'lead-plate', 'coal', 'copper-plate', 'plastic-bar', 'silicon-ore', 'chlorine', 'hydrogen', 'stone', 'pure-water'])
 
 RECIPE_LIST = [
   Recipe('electronic-circuit-board', ELECTRONICS_ASSEMBLER2, 1, secs(5), [
@@ -157,15 +159,55 @@ RECIPE_LIST = [
     Ingredient('wood'),
     Ingredient('resin')
   ]),
- #Recipe('resin', ASSEMBLER, 1, secs(1), [
- #  Ingredient('wood')
- #]),
+  Recipe('resin-DISABLED', ASSEMBLER, 1, secs(1), [
+    Ingredient('wood')
+  ]),
   Recipe('resin', CHEMICAL_PLANT, 1, secs(1), [
     Ingredient('heavy-oil', 10)
   ]),
   Recipe('wood', GREENHOUSE, 15, secs(60), [
     Ingredient('seedling', 10),
     Ingredient('water', 20)
+  ]),
+  Recipe('wood (fertiliser, disabled)', GREENHOUSE, 30, secs(45), [
+    Ingredient('seedling', 10),
+    Ingredient('water', 20),
+    Ingredient('fertiliser', 5)
+  ]),
+  Recipe('fertiliser', CHEMICAL_PLANT, 1, secs(3), [
+    Ingredient('nitric-acid', 10),
+    Ingredient('ammonia', 10)
+  ]),
+  Recipe('nitric-acid', CHEMICAL_PLANT, 20, secs(1), [
+    Ingredient('nitrogen-dioxide', 20),
+    Ingredient('hydrogen-peroxide', 20)
+  ]),
+  Recipe('ammonia', CHEMICAL_PLANT, 20, secs(1), [
+    Ingredient('nitrogen', 10),
+    Ingredient('hydrogen', 20)
+  ]),
+  Recipe('nitrogen-dioxide', CHEMICAL_PLANT, 20, secs(1), [
+    Ingredient('nitric-oxide', 20),
+    Ingredient('oxygen', 10)
+  ]),
+  Recipe('nitric-oxide', CHEMICAL_PLANT, 20, secs(1), [
+    Ingredient('ammonia', 20),
+    Ingredient('oxygen', 25)
+  ]),
+  Recipe('oxygen', CHEMICAL_PLANT, 12.5, secs(1), [
+    Ingredient('pure-water', 10)
+  ]),
+  Recipe('hydrogen', CHEMICAL_PLANT, 20, secs(1), [
+    Ingredient('pure-water', 10)
+  ]),
+  Recipe('nitrogen', CHEMICAL_PLANT, 20, secs(1), [
+    Ingredient('compressed-air', 25)
+  ]),
+  Recipe('hydrogen-peroxide', CHEMICAL_PLANT, 8, secs(1), [
+    Ingredient('hydrogen', 16),
+    Ingredient('oxygen', 20)
+  ]),
+  Recipe('compressed-air', COMPRESSOR, 100, secs(1), [
   ]),
   Recipe('limestone', CHEMICAL_PLANT, 1, secs(2), [
     Ingredient('stone')
