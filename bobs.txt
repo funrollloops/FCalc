@@ -1,7 +1,7 @@
 
  1.00/s   9.3🏭 chemical-science-pack (assembler-2)
    0.50/s   0.1🏭 sulfur (chemical-plant)
-     5.00/s hydrogen-sulfide
+     5.00/s   1.3┋ hydrogen-sulfide
      2.50/s   0.2🏭 oxygen (chemical-plant)
        2.00/s   0.0🏭 pure-water (chemical-plant)
          2.00/s water
@@ -13,9 +13,9 @@
        1.00/s iron-plate
    1.00/s   2.7🏭 sodium-hydroxide (electrolyser)
      1.00/s   0.2🏭 salt (steel-chemical-furnace)
-       25.00/s   3.3┋ water
-     10.00/s   1.3┋   0.2🏭 pure-water (chemical-plant)
-       10.00/s   1.3┋ water
+       25.00/s   6.7┋ water
+     10.00/s   2.7┋   0.2🏭 pure-water (chemical-plant)
+       10.00/s   2.7┋ water
    1.50/s electronic-circuit-board
 
  2.00/s   4.4🏭 electronic-circuit-board (electronics-assembler-2)
@@ -25,15 +25,15 @@
      1.00/s   0.3🏭 solder-plate (steel-metal-mixing-furnace)
        0.36/s tin-plate
        0.64/s lead-plate
-   8.00/s   1.1┋   1.4🏭 basic-electronic-components (electronics-assembler-2)
+   8.00/s   2.1┋   1.4🏭 basic-electronic-components (electronics-assembler-2)
      1.60/s   0.8🏭 carbon (steel-chemical-furnace)
        0.80/s coal
-       4.00/s water
+       4.00/s   1.1┋ water
      1.60/s   0.1🏭 tinned-copper-wire (electronics-assembler-2)
        1.60/s   0.2🏭 copper-cable (electronics-assembler-2)
          0.80/s copper-plate
        0.53/s tin-plate
-   8.00/s   1.1┋   2.5🏭 transistors (electronics-assembler-2)
+   8.00/s   2.1┋   2.5🏭 transistors (electronics-assembler-2)
      1.60/s plastic-bar
      3.20/s   2.7🏭 silicon-wafer (assembler-2)
        0.40/s   1.7🏭 silicon-plate (electrolyser)
@@ -44,9 +44,9 @@
          0.40/s   0.4🏭 calcium-chloride (chemical-plant)
            0.40/s   0.8🏭 limestone (chemical-plant)
              0.40/s stone
-           20.00/s   2.7┋   0.8🏭 hydrogen-chloride (chemical-plant)
-             10.00/s   1.3┋ chlorine
-             8.00/s   1.1┋ hydrogen
+           20.00/s   5.3┋   0.8🏭 hydrogen-chloride (chemical-plant)
+             10.00/s   2.7┋ chlorine
+             8.00/s   2.1┋ hydrogen
      1.60/s   0.1🏭 tinned-copper-wire (electronics-assembler-2)
        1.60/s   0.2🏭 copper-cable (electronics-assembler-2)
          0.80/s copper-plate
@@ -57,7 +57,7 @@
          0.67/s seedling
          1.33/s water
        1.00/s   1.0🏭 resin (chemical-plant)
-         10.00/s   1.3┋ heavy-oil
+         10.00/s   2.7┋ heavy-oil
      2.00/s copper-plate
      2.00/s tin-plate
 

@@ -272,9 +272,10 @@ class Totals:
 
 
 def belts(items_per_sec: float):
-  if items_per_sec <= 7.5:
+  LANE_CAPACITY = 15 / 4
+  if items_per_sec <= LANE_CAPACITY:
     return ''
-  return ' %5.1f┋' % (items_per_sec / 7.5)
+  return ' %5.1f┋' % (items_per_sec / LANE_CAPACITY)
 
 
 def calculate_recursive(name: str, items_per_second: float,
