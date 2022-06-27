@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from collections import defaultdict
 from dataclasses import dataclass
 from datetime import timedelta
 from typing import NamedTuple, TextIO
@@ -53,23 +54,33 @@ SPEED2 = Module('speed-2', crafting_speed=0.3, power=0.6)
 EFFICIENCY1 = Module('efficiency-1', power=-0.3)
 STONE_FURNACE = Building('stone-furnace', 1)
 STEEL_FURNACE = Building('steel-furnace', 2)
-ELECTRIC_FURNACE = Building('electric-furnace', 2, slots=2)
+ELECTRIC_FURNACE1 = Building('electric-furnace-1', 2, slots=2)
+ELECTRIC_FURNACE2 = Building('electric-furnace-2', 3, slots=2)
+ELECTRIC_FURNACE = ELECTRIC_FURNACE2
 STONE_METAL_MIXING_FURNACE = Building('stone-metal-mixing-furnace', 1)
 STEEL_METAL_MIXING_FURNACE = Building('steel-metal-mixing-furnace', 2)
 STONE_CHEMICAL_FURNACE = Building('stone-chemical-furnace', 1)
 STEEL_CHEMICAL_FURNACE = Building('steel-chemical-furnace', 2)
-ELECTROLYSER = Building('electrolyser', 0.75)
+ELECTROLYSER1 = Building('electrolyser-1', 0.75)
+ELECTROLYSER2 = Building('electrolyser-2', 1.25)
+ELECTROLYSER3 = Building('electrolyser-3', 2.00)
+ELECTROLYSER4 = Building('electrolyser-4', 2.75)
+ELECTROLYSER = ELECTROLYSER3
 
 
-ASSEMBLER1 = Building('assembler-1', .5)
-ASSEMBLER2 = Building('assembler-2', .75, slots=2)
+ASSEMBLER1 = Building('assembler-1', 0.50, slots=0)
+ASSEMBLER2 = Building('assembler-2', 0.75, slots=2)
 ASSEMBLER3 = Building('assembler-3', 1.25, slots=4)
+ASSEMBLER4 = Building('assembler-4', 2.00, slots=4)
+ASSEMBLER5 = Building('assembler-5', 2.75, slots=4)
 ELECTRONICS_ASSEMBLER1 = Building('electronics-assembler-1', 1)
 ELECTRONICS_ASSEMBLER2 = Building('electronics-assembler-2', 2.25)
+ELECTRONICS_ASSEMBLER3 = Building('electronics-assembler-3', 4)
 ASSEMBLER3_4PROD2_16SPDBCON = ModdedBuilding('assembler-3:4p₂☸16s₂',
                                              ASSEMBLER3, [PRODUCTIVITY2] * 4,
                                              [SPEED2] * 16)
-ASSEMBLER = ASSEMBLER2
+ASSEMBLER_NOPROD = ASSEMBLER4
+ASSEMBLER = ASSEMBLER_NOPROD
 
 CHEMICAL_PLANT = Building('chemical-plant', 1, slots=3)
 ELECTRIC_MINING_DRILL = Building('electric-mining-drill', .5, slots=3)
@@ -77,10 +88,10 @@ WATER_PUMP = Building('water-pump', 1)
 GREENHOUSE = Building('greenhouse', 0.75)
 COMPRESSOR1 = Building('compressor', 1)
 
-FURNACE = STEEL_FURNACE
+FURNACE = ELECTRIC_FURNACE
 ASSEMBLER = ASSEMBLER2
 METAL_MIXING_FURNACE = STEEL_METAL_MIXING_FURNACE
-ELECTRONICS_ASSEMBLER = ELECTRONICS_ASSEMBLER2
+ELECTRONICS_ASSEMBLER = ELECTRONICS_ASSEMBLER3
 CHEMICAL_FURNACE = STEEL_CHEMICAL_FURNACE
 COMPRESSOR = COMPRESSOR1
 
@@ -97,9 +108,168 @@ class Recipe(NamedTuple):
   ingredients: list[Ingredient]
 
 
-RAWS = set(['petroleum-gas', 'heavy-oil', 'solid-fuel', 'light-oil', 'seedling', 'water', 'tin-plate', 'lead-plate', 'coal', 'copper-plate', 'plastic-bar', 'silicon-ore', 'chlorine', 'hydrogen', 'stone', 'steel-plate', 'iron-plate', 'hydrogen-sulfide'])
+RAWS = set([
+  'petroleum-gas', 'heavy-oil', 'solid-fuel', 'light-oil',
+  'seedling', 'water',
+  'tin-plate', 'lead-plate', 'copper-plate', 'steel-plate', 'iron-plate', 'brass-plate',
+  'plastic-bar', 'glass',
+  'silicon-ore', 'stone', 'coal', 'gold-ore', 'iron-ore', 'aluminium-ore', 'copper-ore',
+  'chlorine', 'hydrogen', 'hydrogen-sulfide', 'sulfuric-acid'
+])
 
 RECIPE_LIST = [
+  Recipe('logistic-science-pack', ASSEMBLER, 3, secs(21), [
+    Ingredient('brass-chest', 2),
+    Ingredient('express-transport-belt', 1),
+    Ingredient('express-filter-inserter', 1),
+    Ingredient('flying-robot-frame', 1),
+  ]),
+  Recipe('brass-chest', ASSEMBLER, 1, secs(.5), [
+    Ingredient('brass-plate', 8)
+  ]),
+  Recipe('express-transport-belt', ASSEMBLER_NOPROD, 1, secs(0.5), [
+    Ingredient('fast-transport-belt', 1),
+    Ingredient('aluminium-plate', 2),
+    Ingredient('cobalt-steel-gear-wheel', 4),
+    Ingredient('cobalt-steel-bearing', 4)
+  ]),
+  Recipe('express-filter-inserter', ASSEMBLER_NOPROD, 1, secs(0.5), [
+    Ingredient('fast-filter-inserter', 1),
+    Ingredient('aluminium-plate', 1),
+    Ingredient('electronic-circuit-board', 5),
+    Ingredient('cobalt-steel-gear-wheel', 1),
+    Ingredient('cobalt-steel-bearing', 1)
+  ]),
+  Recipe('flying-robot-frame', ASSEMBLER, 1, secs(20), [
+    Ingredient('steel-plate', 1),
+    Ingredient('battery', 2),
+    Ingredient('electric-engine-unit', 1),
+    Ingredient('basic-electronic-board', 3)
+  ]),
+  Recipe('fast-transport-belt', ASSEMBLER_NOPROD, 1, secs(0.5), [
+    Ingredient('transport-belt', 1),
+    Ingredient('bronze-plate', 2),
+    Ingredient('steel-gear-wheel', 4),
+  ]),
+  Recipe('aluminium-plate', ELECTROLYSER, 2, secs(6.4), [
+    Ingredient('carbon', 1),
+    Ingredient('alumina', 2),
+  ]),
+  Recipe('cobalt-steel-gear-wheel', ASSEMBLER, 1, secs(0.5), [
+    Ingredient('cobalt-steel-plate', 1),
+  ]),
+  Recipe('cobalt-steel-bearing', ASSEMBLER, 2, secs(0.5), [
+    Ingredient('cobalt-steel-plate', 1),
+    Ingredient('cobalt-steel-bearing-ball', 16),
+  ]),
+  Recipe('cobalt-steel-bearing-ball', ASSEMBLER, 12, secs(0.5), [
+    Ingredient('cobalt-steel-plate', 1),
+  ]),
+  Recipe('cobalt-steel-plate', METAL_MIXING_FURNACE, 10, secs(32), [
+    Ingredient('iron-plate', 14),
+    Ingredient('cobalt-plate', 1),
+  ]),
+  Recipe('cobalt-plate', CHEMICAL_FURNACE, 1, secs(3.2), [
+    Ingredient('cobalt-oxide', 1),
+    Ingredient('sulfuric-acid', 10)
+  ]),
+  Recipe('fast-filter-inserter', ASSEMBLER_NOPROD, 1, secs(0.5), [
+    Ingredient('filter-inserter', 1),
+    Ingredient('bronze-plate', 1),
+    Ingredient('basic-electronic-board', 1),
+    Ingredient('steel-gear-wheel', 1),
+  ]),
+  Recipe('filter-inserter', ASSEMBLER_NOPROD, 1, secs(0.5), [
+    Ingredient('inserter', 1),
+    Ingredient('basic-electronic-board', 4)
+  ]),
+  Recipe('inserter', ASSEMBLER_NOPROD, 1, secs(0.5), [
+    Ingredient('iron-plate', 1),
+    Ingredient('iron-gear-wheel', 1),
+    Ingredient('basic-circuit-board', 1),
+  ]),
+  Recipe('battery', CHEMICAL_PLANT, 1, secs(4), [
+    Ingredient('plastic-bar', 1),
+    Ingredient('lead-plate', 2),
+    Ingredient('sulfuric-acid', 20)
+  ]),
+  Recipe('electric-engine-unit', ASSEMBLER, 1, secs(10), [
+    Ingredient('engine-unit', 1),
+    Ingredient('basic-electronic-board', 2),
+    Ingredient('lubricant', 15)
+  ]),
+  Recipe('transport-belt', ASSEMBLER_NOPROD, 1, secs(0.5), [
+    Ingredient('iron-gear-wheel', 2),
+    Ingredient('basic-transport-belt', 1),
+    Ingredient('tin-plate', 2),
+  ]),
+  Recipe('basic-transport-belt', ASSEMBLER_NOPROD, 2, secs(0.5), [
+    Ingredient('iron-plate', 1),
+    Ingredient('iron-gear-wheel', 1)
+  ]),
+  Recipe('bronze-plate', METAL_MIXING_FURNACE, 5, secs(16), [
+    Ingredient('copper-plate', 3),
+    Ingredient('tin-plate', 2),
+  ]),
+  Recipe('steel-gear-wheel', ASSEMBLER, 1, secs(0.5), [
+    Ingredient('steel-plate', 1),
+  ]),
+  Recipe('basic-electronic-board', ELECTRONICS_ASSEMBLER, 1, secs(1), [
+    Ingredient('solder', 1),
+    Ingredient('basic-electronic-components', 5),
+    Ingredient('basic-circuit-board', 1)
+  ]),
+  Recipe('basic-circuit-board', ELECTRONICS_ASSEMBLER, 1, secs(1), [
+    Ingredient('copper-cable', 3),
+    Ingredient('wooden-board', 1),
+  ]),
+  Recipe('wooden-board', ELECTRONICS_ASSEMBLER, 2, secs(0.5), [
+    Ingredient('wood', 1)
+  ]),
+  Recipe('lubricant', CHEMICAL_PLANT, 10, secs(1), [
+    Ingredient('heavy-oil', 10)
+  ]),
+  Recipe('alumina', CHEMICAL_FURNACE, 1, secs(2), [
+    Ingredient('aluminium-ore', 1),
+    Ingredient('sodium-hydroxide', 1)
+  ]),
+  Recipe('electronic-logic-board', ELECTRONICS_ASSEMBLER, 1, secs(10), [
+    Ingredient('solder', 2),
+    Ingredient('basic-electronic-components', 2),
+    Ingredient('transistors', 4),
+    Ingredient('integrated-circuits', 2),
+    Ingredient('superior-circuit-board', 1)
+  ]),
+  Recipe('integrated-circuits', ELECTRONICS_ASSEMBLER, 5, secs(5), [
+    Ingredient('plastic-bar'),
+    Ingredient('silicon-wafer', 4),
+    Ingredient('tinned-copper-wire', 1),
+    Ingredient('sulfuric-acid', 5)
+  ]),
+  Recipe('superior-circuit-board', ELECTRONICS_ASSEMBLER, 1, secs(10), [
+    Ingredient('copper-plate'),
+    Ingredient('gold-plate'),
+    Ingredient('fibreglass-board'),
+    Ingredient('ferric-chloride-solution', 5)
+  ]),
+  Recipe('gold-plate', CHEMICAL_FURNACE, 1, secs(3.2), [
+    Ingredient('gold-ore'),
+    Ingredient('chlorine', 3)
+  ]),
+  Recipe('fibreglass-board', ELECTRONICS_ASSEMBLER, 2, secs(0.5), [
+    Ingredient('plastic-bar'),
+    Ingredient('glass')
+  ]),
+  Recipe('ferric-chloride-solution', CHEMICAL_PLANT, 50, secs(2.5), [
+    Ingredient('iron-ore'),
+    Ingredient('hydrogen-chloride', 30)
+  ]),
+  Recipe('cobalt-oxide', CHEMICAL_FURNACE, 2, secs(25), [
+    Ingredient('copper-ore', 7),
+    Ingredient('carbon', 1),
+    Ingredient('limestone', 1),
+    Ingredient('hydrogen', 5),
+  ]),
   Recipe('chemical-science-pack', ASSEMBLER, 2, secs(14), [
     Ingredient('sulfur'),
     Ingredient('engine-unit', 2),
@@ -113,12 +283,12 @@ RECIPE_LIST = [
   Recipe('engine-unit', ASSEMBLER, 1, secs(10), [
     Ingredient('steel-plate'),
     Ingredient('iron-gear-wheel'),
-    Ingredient('iron-pipe')
+    Ingredient('iron-pipe', 2)
   ]),
   Recipe('iron-gear-wheel', ASSEMBLER, 1, secs(0.5), [
     Ingredient('iron-plate', 2)
   ]),
-  Recipe('iron-pipe', ASSEMBLER, 1, secs(0.5), [
+  Recipe('iron-pipe', ASSEMBLER_NOPROD, 1, secs(0.5), [
     Ingredient('iron-plate', 1)
   ]),
   Recipe('sodium-hydroxide', ELECTROLYSER, 1, secs(2), [
@@ -128,7 +298,7 @@ RECIPE_LIST = [
   Recipe('salt', CHEMICAL_FURNACE, 1, secs(0.5), [
     Ingredient('water', 25)
   ]),
-  Recipe('electronic-circuit-board', ELECTRONICS_ASSEMBLER2, 1, secs(5), [
+  Recipe('electronic-circuit-board', ELECTRONICS_ASSEMBLER, 1, secs(5), [
     Ingredient('solder'),
     Ingredient('basic-electronic-components', 4),
     Ingredient('transistors', 4),
@@ -142,7 +312,7 @@ RECIPE_LIST = [
     Ingredient('tin-plate', 4),
     Ingredient('lead-plate', 7)
   ]),
-  Recipe('basic-electronic-components', ELECTRONICS_ASSEMBLER2, 5, secs(2), [
+  Recipe('basic-electronic-components', ELECTRONICS_ASSEMBLER, 5, secs(2), [
     Ingredient('carbon'),
     Ingredient('tinned-copper-wire')
   ]),
@@ -187,10 +357,10 @@ RECIPE_LIST = [
     Ingredient('wood'),
     Ingredient('resin')
   ]),
-  Recipe('resin-DISABLED', ASSEMBLER, 1, secs(1), [
+  Recipe('resin', ASSEMBLER, 1, secs(1), [
     Ingredient('wood')
   ]),
-  Recipe('resin', CHEMICAL_PLANT, 1, secs(1), [
+  Recipe('resin (heavy oil)', CHEMICAL_PLANT, 1, secs(1), [
     Ingredient('heavy-oil', 10)
   ]),
   Recipe('wood', GREENHOUSE, 15, secs(60), [
@@ -246,6 +416,12 @@ RECIPE_LIST = [
   Recipe('water', WATER_PUMP, 1200, secs(1), [])
 ]
 
+seen = defaultdict(lambda: 0)
+for r in RECIPE_LIST:
+  seen[r.name] += 1
+for r in (n for r, c in seen.items() if c > 1):
+  print(f'WARNING: duplicate recipe for {r}')
+
 RECIPES: dict[str, Recipe] = {r.name: r for r in RECIPE_LIST}
 
 
@@ -262,7 +438,7 @@ def check_recipes():
 
 class Demand(NamedTuple):
   name: str
-  min_items_per_second: float
+  min_items_per_second: float = 0
 
 
 @dataclass
@@ -354,12 +530,24 @@ def main(args):
   else:
     output = open(args[0], 'w', encoding='utf-8')
 
-  calculate(
-      [
+  """
+  calculate([
           Demand('chemical-science-pack', 1),
           Demand('electronic-circuit-board', 2),
+          Demand('electronic-logic-board', 2)
       ],
       output)
+  """
+
+  calculate([
+    Demand('logistic-science-pack', 1),
+    Demand('electronic-logic-board', 2),
+    Demand('electronic-circuit-board', 2),
+    Demand('basic-electronic-board'),
+    Demand('cobalt-steel-plate'),
+    Demand('bronze-plate'),
+    Demand('solder'),
+  ], output)
 
   output.close()
 
