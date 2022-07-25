@@ -66,10 +66,10 @@ STEEL_METAL_MIXING_FURNACE = Building('steel-metal-mixing-furnace', 2)
 STONE_CHEMICAL_FURNACE = Building('stone-chemical-furnace', 1)
 STEEL_CHEMICAL_FURNACE = Building('steel-chemical-furnace', 2)
 ELECTROLYSER1 = Building('electrolyser-1', 0.75)
-ELECTROLYSER2 = Building('electrolyser-2', 1.25)
-ELECTROLYSER3 = Building('electrolyser-3', 2.00)
+ELECTROLYSER2 = Building('electrolyser-2', 1.25, slots=3)
+ELECTROLYSER3 = Building('electrolyser-3', 2.00, slots=4)
 ELECTROLYSER4 = Building('electrolyser-4', 2.75)
-ELECTROLYSER = ELECTROLYSER3
+ELECTROLYSER = ModdedBuilding('electrolyser-3:4p₄', ELECTROLYSER3, [PRODUCTIVITY4]*4)
 
 
 ASSEMBLER1 = Building('assembler-1', 0.50, slots=0)
@@ -395,7 +395,7 @@ RECIPE_LIST = [
     Ingredient('carbon', 1),
     Ingredient('limestone', 1),
     Ingredient('hydrogen', 5),
-  ]),
+  ], side_outputs=[Ingredient('copper-plate', 9)]),
   Recipe('chemical-science-pack', ASSEMBLER_MAXPROD, 2, secs(14), [
     Ingredient('sulfur'),
     Ingredient('engine-unit', 2),
@@ -620,20 +620,21 @@ def calculate_recursive(name: str, items_per_second: float,
               depth: int):
     totals.setdefault(name, Totals())
     totals[name].items_per_sec += items_per_sec
+    totals[name].refcount += 1
     if name in RAWS or (name in deferred and depth != 0):
       output.write("%s% 5.2f/s%s %s\n" %
                    ('  ' * depth, items_per_sec, belts(items_per_sec), name))
       return
-    totals[name].refcount += 1
     recipe = RECIPES[name]
     # Calculate how many assemblers are needed.
     per_building_per_sec = (recipe.output_qty / recipe.time.total_seconds() *
                             recipe.building.crafting_speed *
                             recipe.building.productivity)
     buildings = items_per_sec / per_building_per_sec
-    output.write("%s% 5.2f/s%s % 5.1f🏭 %s (%s)\n" %
+    output.write("%s% 5.2f/s%s % 5.1f🏭 %s (%s)%s\n" %
                  ('  ' * depth, items_per_sec, belts(items_per_sec), buildings,
-                  name, recipe.building.name))
+                  name, recipe.building.name,
+                  f' ※{totals[name].refcount-1}' if depth==0 and totals[name].refcount > 1 else ''))
     totals[name].buildings += buildings
     # Calculate demand on the inputs.
     for input in recipe.ingredients:
@@ -668,8 +669,10 @@ def calculate(demands: list[Demand], output: TextIO):
     if requested < demand.min_items_per_second:
       requested = demand.min_items_per_second
     processed[demand.name] = requested
-    totals[demand.name] = Totals()
+    #totals.setdefault(demand.name, Totals())
+    totals[demand.name] = Totals(refcount = totals[demand.name].refcount if demand.name in totals else 0)
     calculate_recursive(demand.name, requested, totals, deferred, output)
+    totals[demand.name].refcount = 1
     deferred.remove(demand.name)
     for name, items_per_sec in processed.items():
       if totals[name].items_per_sec != items_per_sec:
@@ -708,6 +711,7 @@ def main(args):
     Demand('cobalt-steel-plate'),
     Demand('bronze-plate'),
     Demand('basic-electronic-components'),
+    Demand('basic-circuit-board'),
     Demand('transistors'),
     Demand('silicon-wafer'),
     Demand('tinned-copper-wire'),
@@ -715,6 +719,14 @@ def main(args):
     Demand('resin'),
     Demand('wood'),
     Demand('aluminium-plate'),
+    Demand('steel-plate'),
+    Demand('titanium-plate'),
+    Demand('silicon-plate'),
+    Demand('calcium-chloride'),
+    Demand('carbon'),
+    Demand('stone-brick'),
+    Demand('iron-plate'),
+    Demand('copper-plate'),
   ], output)
 
   output.close()
